@@ -1,17 +1,17 @@
 {
-	"compileOnSave": true,
-	"compilerOptions": {
-		"target": "ES6",
-		"strict": true,
-		"esModuleInterop": true,
-		"module": "esnext",
-		"moduleResolution": "node",
-		"forceConsistentCasingInFileNames": true,
-		"noImplicitAny": true,
-		"noEmitOnError": true,
-		"sourceMap": true,
-		"baseUrl": "./"
-	},
-	"include": ["**/*.ts", "src/setup.ts", "index.js"],
-	"exclude": ["node_modules", "**/*.spec.ts"]
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "ES6",
+    "strict": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "noEmitOnError": true,
+    "sourceMap": true,
+    "baseUrl": "./"
+  },
+  "include": ["**/*.ts", "src/setup.ts", "index.js"],
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.js"]
 }

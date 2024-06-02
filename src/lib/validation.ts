@@ -33,3 +33,19 @@ export const stringValidator = ({
 
 	return val;
 };
+
+export const validationCheck = (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	const validation = validationResult(req);
+	if (!validation.isEmpty()) {
+		return res.status(400).json({ errors: validation.array() });
+	}
+	return next();
+};
+
+// XSS sanitizer 
+export const xssSanitizer = (param: string) =>
+	body(param).customSanitizer((v) => xss(v));
