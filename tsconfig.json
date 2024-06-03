@@ -12,6 +12,6 @@
     "sourceMap": true,
     "baseUrl": "./"
   },
-  "include": ["**/*.ts", "src/setup.ts", "index.js", "src/app.ts"],
+  "include": ["**/*.ts", "src/setup.ts", "serial.js", "src/app.ts"],
   "exclude": ["node_modules", "**/*.spec.ts", "**/*.js"]
 }

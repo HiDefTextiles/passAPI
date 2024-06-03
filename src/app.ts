@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { cors } from './lib/cors.js';
 import { router } from './routes/api.js';
-
+import { writeDataToArduino, parser } from './lib/serial.js'
 
 export const app = express();
 

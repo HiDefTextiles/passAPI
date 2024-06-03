@@ -1,6 +1,7 @@
 import { body } from "express-validator";
 import { SerialPort } from "serialport";
 import { ReadlineParser } from "serialport";
+// import { writeDataToArduino, parser } from './serial.js'
 
 export const postPattern = [
 	body("start")
@@ -15,28 +16,21 @@ export const postPattern = [
 		.trim()
 		.notEmpty()
 		.custom(pattern => Array.isArray(pattern)
-			&& pattern.every(row => Array.isArray(row))
+			&& pattern.every(row => {
+				console.log(row)
+				return Array.isArray(row)
+			})
 			&& pattern.every(row => row.every(
-				(value) => value && Number.isInteger(value) && (value >= 0) && (value <= 4))))
-		.withMessage('pattern has to be a array of arrays (matrix) including only integer values between 0 and 4'),
+				(value) => {
+					console.log(value);
+					return value && Number.isInteger(value) && (value >= 0) && (value <= 4)
+				}
+			)))
+		.withMessage('pattern has to be a array of pattern strings including only integer values between 0 and 4'),
 	async (req, res) => {
 		const { start, pattern } = req.body;
-		SerialPort.list().then(port => {
-			const com = port.filter(i => i.serialNumber)[0];
-			// com.baudRate = 115200;
-			// com.DtrEnable = false;
-			// const portSerial = new SerialPort(com)
-			// const parser = portSerial.pipe(new ReadlineParser({ delimiter: '\n' }));
-			// parser.on('data', data => {
-			// 	console.log('received', data);
-			// });
-			// portSerial.write(`${start}${pattern[0][0]}`, (err) => {
-			// 	if (err) {
-			// 		return console.log('Error on write: ', err.message);
-			// 	}
-			// 	console.log('message written');
-			// });
-		});
+		console.log(`${start}${pattern[0].replace(',', '')}`);
+		res.json(`${start}${pattern[0].replace(',', '')}`)
 	}
 
 ]

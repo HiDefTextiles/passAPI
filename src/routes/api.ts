@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { catchErrors } from '../lib/catch-errors.js';
-
+import { postPattern } from '../lib/crud.js'
 export const router = express.Router();
 
 export async function index(req: Request, res: Response) {
@@ -25,9 +25,9 @@ export async function index(req: Request, res: Response) {
 									description: 'The number of the beginning needle for the pattern on the passap bed.'
 								},
 								pattern: {
-									type: "Array<Array<number>>",
+									type: "Array< Array<number> | string<number> >",
 									range: [0, 4],
-									description: "A matrix of the integer value 0 for empty and 1-4 for each color, odd numbered lines are for the movement from the color picker to the other end and the even ones the vice versa.",
+									description: "A array of strings OR arrays  containing a pattern of the integer value 0 for empty and 1-4 for each color, odd numbered lines are for the movement from the color picker to the other end and the even ones the vice versa.",
 								}
 							},
 							required: ["start", "pattern"]
@@ -43,4 +43,4 @@ export async function index(req: Request, res: Response) {
 router.get('/', catchErrors(index));
 
 // router.get('/pattern',)
-router.post('/pattern',)
+router.post('/pattern', postPattern)
