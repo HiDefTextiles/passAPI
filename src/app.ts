@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { cors } from './lib/cors.js';
 import { router } from './routes/api.js';
 
+
 export const app = express();
 
 app.use(express.json());

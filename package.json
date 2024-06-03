@@ -1,11 +1,12 @@
 {
 	"name": "passapapi",
 	"version": "1.0.0",
-	"main": "index.js",
+	"main": "./src/app.js",
 	"type": "module",
 	"scripts": {
-		"dev": "nodemon",
-		"start": "node --lodaer ts-node/esm ./src/app.ts"
+		"devtest": "node ./index.js",
+		"dev": "node --loader ts-node/esm ./src/app.ts",
+		"start": "node --loader ts-node/esm ./src/app.ts"
 	},
 	"author": "",
 	"license": "ISC",

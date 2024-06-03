@@ -23,19 +23,19 @@ export const postPattern = [
 		const { start, pattern } = req.body;
 		SerialPort.list().then(port => {
 			const com = port.filter(i => i.serialNumber)[0];
-			com['baudRate'] = 115200;
-			com.DtrEnable = false;
-			const portSerial = new SerialPort(com)
-			const parser = portSerial.pipe(new ReadlineParser({ delimiter: '\n' }));
-			parser.on('data', data => {
-				console.log('received', data);
-			});
-			portSerial.write(`${start}${pattern[0][0]}`, (err) => {
-				if (err) {
-					return console.log('Error on write: ', err.message);
-				}
-				console.log('message written');
-			});
+			// com.baudRate = 115200;
+			// com.DtrEnable = false;
+			// const portSerial = new SerialPort(com)
+			// const parser = portSerial.pipe(new ReadlineParser({ delimiter: '\n' }));
+			// parser.on('data', data => {
+			// 	console.log('received', data);
+			// });
+			// portSerial.write(`${start}${pattern[0][0]}`, (err) => {
+			// 	if (err) {
+			// 		return console.log('Error on write: ', err.message);
+			// 	}
+			// 	console.log('message written');
+			// });
 		});
 	}
 
