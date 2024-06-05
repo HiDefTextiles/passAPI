@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 import { SerialPort } from "serialport";
-import { ReadlineParser } from "serialport";
+import { parser, writeDataToArduino } from "./serial.js";
 // import { writeDataToArduino, parser } from './serial.js'
 
 export const postPattern = [
@@ -29,7 +29,18 @@ export const postPattern = [
 		.withMessage('pattern has to be a array of pattern strings including only integer values between 0 and 4'),
 	async (req, res) => {
 		const { start, pattern } = req.body;
-		console.log(`${start}${pattern[0].replace(',', '')}`);
+		const linur = pattern.length;
+		let nr = 0;
+		writeDataToArduino(`${start}${pattern[nr].replace(',', '')}`);
+		// if ( nr < linur - 1 )
+		parser.on('data', data => {
+			// console.log((data === "R" && nr % 2 === 0), (nr > 0 && data === "L" && nr % 2 !== 0), linur)
+			((data === "R" && nr % 2 === 0) || (nr > 0 && data === "L" && nr % 2 !== 0))
+				&& nr < linur && writeDataToArduino(`${start}${pattern[nr++].replace(',', '')}`);
+			console.log(data, nr, linur);
+		}
+		)
+		// console.log(`${start}${pattern[0].replace(',', '')}`);
 		res.json(`${start}${pattern[0].replace(',', '')}`)
 	}
 

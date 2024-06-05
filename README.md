@@ -1,5 +1,7 @@
 Það er reset í hvert skipti sem við tengjumst núverandi plan
 
+Það þurfa að líða 2s frá því að node js tengist arduino í gegnum serial.
+
 # TODO
 - tengjast serial port og server í byrjun
 	- Gæti þurft að skrifa allt í js vegna type vesenis í Serial

@@ -10,5 +10,8 @@
 	"python.REPL.enableREPLSmartSend": false,
 	"[cpp]": {
 		"editor.defaultFormatter": "ms-vscode.cpptools"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "vscode.json-language-features"
 	}
 }
