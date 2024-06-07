@@ -3,6 +3,10 @@ import { SerialPort } from "serialport";
 import { parser, writeDataToArduino } from "./serial.js";
 // import { writeDataToArduino, parser } from './serial.js'
 
+let nr = 0;
+
+const postrequests = [];
+
 export const postPattern = [
 	body("start")
 		.trim()
@@ -30,18 +34,33 @@ export const postPattern = [
 	async (req, res) => {
 		const { start, pattern } = req.body;
 		const linur = pattern.length;
-		let nr = 0;
-		writeDataToArduino(`${start}${pattern[nr].replace(',', '')}`);
-		// if ( nr < linur - 1 )
-		parser.on('data', data => {
-			// console.log((data === "R" && nr % 2 === 0), (nr > 0 && data === "L" && nr % 2 !== 0), linur)
-			((data === "R" && nr % 2 === 0) || (nr > 0 && data === "L" && nr % 2 !== 0))
-				&& nr < linur && writeDataToArduino(`${start}${pattern[nr++].replace(',', '')}`);
-			console.log(data, nr, linur);
+		postrequests.push({ start, pattern })
+		if (postrequests.length === 0) {
+			nr = 0;
+			writeDataToArduino(`${start}${pattern[nr++].replace(',', '')}`); // byrjar ferlið
+			res.json("Munstur sett í vinnslu.")
+		} else {
+			res.json(`Munstur sett í bið, þú ert númer ${postrequests.length} í röðinni ;)`)
 		}
-		)
+		// nr = 0;
+		// writeDataToArduino(`${start}${pattern[nr++].replace(',', '')}`); // byrjar ferlið
+		// if ( nr < linur - 1 )
 		// console.log(`${start}${pattern[0].replace(',', '')}`);
-		res.json(`${start}${pattern[0].replace(',', '')}`)
+		// res.json(`${start}${pattern[0].replace(',', '')}`)
 	}
-
 ]
+
+parser.on('data', data => {
+	if (postrequests) {
+		const { start, pattern } = postrequests[0];
+		const linur = pattern.length;
+
+		((data === "R" && nr % 2 === 0) || (nr > 0 && data === "L" && nr % 2 !== 0))
+			&& nr < linur && writeDataToArduino(`${start}${pattern[nr++].replace(',', '')}`);
+		if (nr === linur - 1) {
+			postrequests.shift();
+		}
+	}
+	console.log(data, nr, linur);
+}
+)
