@@ -21,7 +21,6 @@ export const postPattern = [
 		.notEmpty()
 		.custom(pattern => Array.isArray(pattern)
 			&& pattern.every(row => {
-				console.log(row)
 				return Array.isArray(row)
 			})
 			&& pattern.every(row => row.every(
@@ -34,10 +33,11 @@ export const postPattern = [
 	async (req, res) => {
 		const { start, pattern } = req.body;
 		const linur = pattern.length;
-		postrequests.push({ start, pattern })
-		if (postrequests.length === 0) {
+		postrequests.push({ start, pattern });
+		console.log(pattern, linur);
+		if (postrequests.length === 1) {
 			nr = 0;
-			writeDataToArduino(`${start}${pattern[nr++].replace(',', '')}`); // byrjar ferlið
+			writeDataToArduino(`${start}${pattern[nr++].replaceAll(',', '')}`); // byrjar ferlið
 			res.json("Munstur sett í vinnslu.")
 		} else {
 			res.json(`Munstur sett í bið, þú ert númer ${postrequests.length} í röðinni ;)`)
@@ -51,16 +51,17 @@ export const postPattern = [
 ]
 
 parser.on('data', data => {
-	if (postrequests) {
+	if (postrequests.length) {
 		const { start, pattern } = postrequests[0];
 		const linur = pattern.length;
-
-		((data === "R" && nr % 2 === 0) || (nr > 0 && data === "L" && nr % 2 !== 0))
-			&& nr < linur && writeDataToArduino(`${start}${pattern[nr++].replace(',', '')}`);
-		if (nr === linur - 1) {
+		console.log(linur);
+		((data === "R" && nr % 2 !== 0) || (nr > 0 && data === "L" && nr % 2 === 0))
+			&& nr < linur && writeDataToArduino(`${start}${pattern[nr++].replaceAll(',', '')}`);
+		if (nr >= linur) {
 			postrequests.shift();
+			nr = 0;
 		}
 	}
-	console.log(data, nr, linur);
+	console.log(data, nr);
 }
 )
