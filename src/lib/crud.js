@@ -1,10 +1,17 @@
 import { body } from "express-validator";
 import { SerialPort } from "serialport";
 import { parser, writeDataToArduino } from "./serial.js";
+import { validationCheck } from "./validation.js";
+import { constants } from "buffer";
 // import { writeDataToArduino, parser } from './serial.js'
 
 let nr = 0;
-
+const handler = (start, pattern, msg) => {
+	const munstur = pattern[nr++].replaceAll(',', '').split('');
+	const litur = Math.max(...munstur)
+	writeDataToArduino(`${start}${munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')}`);
+	console.log(Math.max(...munstur))
+}
 const postrequests = [];
 
 export const postPattern = [
@@ -20,43 +27,43 @@ export const postPattern = [
 		.trim()
 		.notEmpty()
 		.custom(pattern => Array.isArray(pattern)
-			&& pattern.every(row => {
-				return Array.isArray(row)
-			})
-			&& pattern.every(row => row.every(
-				(value) => {
-					console.log(value);
-					return value && Number.isInteger(value) && (value >= 0) && (value <= 4)
-				}
-			)))
+		)
 		.withMessage('pattern has to be a array of pattern strings including only integer values between 0 and 4'),
+	body("pattern")
+		.trim()
+		.notEmpty()
+		.custom(
+			pattern => pattern.every(
+				row => {
+					return typeof row === 'string' && row.replaceAll(',', '').split('').every(v => Number.isInteger(Number(v)) && v >= 0 && v <= 4)
+				}
+			)
+		)
+		.withMessage(
+			'pattern rows may only include integer values 0 to 4 and must be arrays or strings'
+		)
+	,
+	validationCheck,
 	async (req, res) => {
-		const { start, pattern } = req.body;
-		const linur = pattern.length;
-		postrequests.push({ start, pattern });
-		console.log(pattern, linur);
+		const { start, pattern, msg } = req.body;
+		postrequests.push({ start, pattern, msg });
 		if (postrequests.length === 1) {
 			nr = 0;
-			writeDataToArduino(`${start}${pattern[nr++].replaceAll(',', '')}`); // byrjar ferlið
+			handler(start, pattern, msg)  // byrjar ferlið
 			res.json("Munstur sett í vinnslu.")
 		} else {
 			res.json(`Munstur sett í bið, þú ert númer ${postrequests.length} í röðinni ;)`)
 		}
-		// nr = 0;
-		// writeDataToArduino(`${start}${pattern[nr++].replace(',', '')}`); // byrjar ferlið
-		// if ( nr < linur - 1 )
-		// console.log(`${start}${pattern[0].replace(',', '')}`);
-		// res.json(`${start}${pattern[0].replace(',', '')}`)
 	}
 ]
 
 parser.on('data', data => {
 	if (postrequests.length) {
-		const { start, pattern } = postrequests[0];
+		const { start, pattern, msg } = postrequests[0];
+		console.log(pattern)
 		const linur = pattern.length;
-		console.log(linur);
 		((data === "R" && nr % 2 !== 0) || (nr > 0 && data === "L" && nr % 2 === 0))
-			&& nr < linur && writeDataToArduino(`${start}${pattern[nr++].replaceAll(',', '')}`);
+			&& nr < linur && handler(start, pattern, msg);
 		if (nr >= linur) {
 			postrequests.shift();
 			nr = 0;

@@ -36,12 +36,13 @@ app.use((err: Error, _req: Request, res: Response) => {
 // });
 
 app.listen(port, () => {
-	console.log(os.networkInterfaces())
+	// console.log(os.networkInterfaces())
 	const networkInfo = os.networkInterfaces().wlan0 || os.networkInterfaces().eth0 || os.networkInterfaces().WiFi // athugar fyrir linux og windows
 	console.info(`Server running at ${networkInfo ?
 		(
 			Number.parseFloat(networkInfo[0].address) && networkInfo[0].address
 			|| Number.parseFloat(networkInfo[1].address) && networkInfo[1].address // skilar ip tölu af tölvu
+			|| Number.parseFloat(networkInfo.splice(-1)[0].address) && networkInfo.splice(-1)[0].address
 		)
 		: 'https://localhost'}:${port}`);
 });
