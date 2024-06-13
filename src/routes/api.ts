@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express';
 import { catchErrors } from '../lib/catch-errors.js';
 import { postPattern } from '../lib/crud.js'
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 export const router = express.Router();
 
 export async function index(req: Request, res: Response) {
@@ -44,3 +47,8 @@ router.get('/', catchErrors(index));
 
 // router.get('/pattern',)
 router.post('/pattern', postPattern)
+router.get('/pattern', (req, res) => {
+	const __filename = fileURLToPath(import.meta.url);
+	const __dirname = dirname(__filename);
+	res.sendFile(path.join(__dirname, '../public/status.html'));
+})

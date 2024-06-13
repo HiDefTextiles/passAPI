@@ -42,7 +42,6 @@ parser.on('data', data => {
  * @returns boolean
  */
 export function writeDataToArduino(message) {
-	console.log(message)
 	portSerial.write(message + '!\n', (err) => {
 		if (err) {
 			return false;

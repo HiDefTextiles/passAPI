@@ -10,7 +10,7 @@ const handler = (start, pattern, msg) => {
 	const munstur = pattern[nr++].replaceAll(',', '').split('');
 	const litur = Math.max(...munstur)
 	writeDataToArduino(`${start}${munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')}`);
-	console.log(Math.max(...munstur))
+	console.log(`litur=${litur} ${(msg && msg[nr - 1]) ? ', msg: ' + msg[nr - 1] : ''}`)
 }
 const postrequests = [];
 
@@ -43,6 +43,10 @@ export const postPattern = [
 			'pattern rows may only include integer values 0 to 4 and must be arrays or strings'
 		)
 	,
+	body('msg')
+		.custom(msg => Array.isArray(msg))
+		.withMessage('msg should be an array of messages to show')
+		.optional(true),
 	validationCheck,
 	async (req, res) => {
 		const { start, pattern, msg } = req.body;
@@ -60,15 +64,14 @@ export const postPattern = [
 parser.on('data', data => {
 	if (postrequests.length) {
 		const { start, pattern, msg } = postrequests[0];
-		console.log(pattern)
 		const linur = pattern.length;
-		((data === "R" && nr % 2 !== 0) || (nr > 0 && data === "L" && nr % 2 === 0))
+		((data === "R" && nr % 2 !== 0) || (nr > 1 && data === "L" && nr % 2 === 0))
 			&& nr < linur && handler(start, pattern, msg);
 		if (nr >= linur) {
 			postrequests.shift();
 			nr = 0;
 		}
 	}
-	console.log(data, nr);
+	console.log(data, nr,);
 }
 )
