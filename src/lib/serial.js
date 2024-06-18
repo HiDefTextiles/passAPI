@@ -6,6 +6,7 @@ import { ReadlineParser } from "serialport";
  * Skilar list af hlutum með path, locationId sem segir til um hvaða port a vel;
  * Skiptir máli ef fleiri en einn Serial, annars bara taka stak núll
  */
+// console.log(await SerialPort.list())
 const portobj = await SerialPort.list().then(port => port.filter(i => i.serialNumber));
 const com = portobj[0];
 if (!com) {

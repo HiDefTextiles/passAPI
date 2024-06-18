@@ -1,29 +1,29 @@
 {
-  "compileOnSave": true,
-  "compilerOptions": {
-    "target": "ES6",
-    "strict": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "checkJs": false,
-    "rootDir": "./src", // Adjust according to your source directory
-    "outDir": "./dist", // Change this to your desired output directory
-    "noEmitOnError": true,
-    "sourceMap": true,
-    "baseUrl": "./"
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.js"
-  ],
-  // "include": ["**/*.ts", "src/setup.ts", "src/app.ts", "**/*.js"],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.js",
-    "src/lib/crud.js"
-  ]
+	"compileOnSave": true,
+	"compilerOptions": {
+		"target": "ES6",
+		"strict": true,
+		"esModuleInterop": true,
+		"module": "esnext",
+		"moduleResolution": "node",
+		"forceConsistentCasingInFileNames": true,
+		"allowJs": true,
+		"checkJs": false,
+		"rootDir": "./src", // Adjust according to your source directory
+		"outDir": "./dist", // Change this to your desired output directory
+		"noEmitOnError": true,
+		"sourceMap": true,
+		"baseUrl": "./"
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.js"
+	],
+	// "include": ["**/*.ts", "src/setup.ts", "src/app.ts", "**/*.js"],
+	"exclude": [
+		"node_modules",
+		"**/*.spec.ts",
+		"**/*.js",
+		"src/lib/control.js"
+	]
 }
