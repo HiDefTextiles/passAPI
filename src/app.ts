@@ -5,11 +5,11 @@ import { writeDataToArduino, parser } from './lib/serial.js'
 import os from 'os'
 import { previewRouter } from './routes/preview.js';
 import http from 'http';
-import WebSocket, { WebSocketServer } from "ws";
+import { WebSocketServer } from "ws";
+import { nr, postrequests } from './lib/control.js';
+import { stringify } from 'querystring';
 
 export const app = express();
-
-let value = 0;
 
 app.use(express.json());
 
@@ -54,12 +54,14 @@ app.listen(port, () => {
 });
 
 const server = http.createServer(app);
-const wss = new WebSocketServer({ port: 3001 });
+export var wss = new WebSocketServer({ port: 3001 });
 wss.on('connection', (ws) => {
 	console.log('New client connected');
 
 	// Send the value to the client when they connect
-	ws.send(value);
+	ws.send(JSON.stringify(
+		{ nr, postrequests }
+	));
 
 	// Optional: you can also handle incoming messages from the client
 	ws.on('message', (message) => {
@@ -70,13 +72,3 @@ wss.on('connection', (ws) => {
 		console.log('Client disconnected');
 	});
 });
-
-// Update the value every second and broadcast to all connected clients
-setInterval(() => {
-	value++;
-	wss.clients.forEach((client) => {
-		if (client.readyState === WebSocket.OPEN) {
-			client.send(value);
-		}
-	});
-}, 1000);

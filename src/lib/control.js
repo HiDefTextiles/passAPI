@@ -3,16 +3,25 @@ import { SerialPort } from "serialport";
 import { parser, writeDataToArduino } from "./serial.js";
 import { validationCheck } from "./validation.js";
 import { constants } from "buffer";
+import { wss } from "../app.js";
+import WebSocket from "ws";
 // import { writeDataToArduino, parser } from './serial.js'
 
-let nr = 0;
+export var nr = 0;
+export const postrequests = [];
 const handler = (start, pattern, msg) => {
+	wss.clients.forEach((client) => {
+		if (client.readyState === WebSocket.OPEN) {
+			client.send(JSON.stringify(
+				{ nr, postrequests }
+			));
+		}
+	});
 	const munstur = pattern[nr++].replaceAll(',', '').split('');
 	const litur = Math.max(...munstur)
 	writeDataToArduino(`${start}${munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')}`);
 	console.log(`litur=${litur} ${(msg && msg[nr - 1]) ? ', msg: ' + msg[nr - 1] : ''}`)
 }
-const postrequests = [];
 
 export const postPattern = [
 	body("start")
@@ -54,9 +63,16 @@ export const postPattern = [
 		if (postrequests.length === 1) {
 			nr = 0;
 			handler(start, pattern, msg)  // byrjar ferlið
-			res.json("Munstur sett í vinnslu.")
+			res.json("Munstur sett í vinnslu.");
 		} else {
-			res.json(`Munstur sett í bið, þú ert númer ${postrequests.length} í röðinni ;)`)
+			res.json(`Munstur sett í bið, þú ert númer ${postrequests.length} í röðinni ;)`);
+			wss.clients.forEach((client) => {
+				if (client.readyState === WebSocket.OPEN) {
+					client.send(JSON.stringify(
+						{ nr, postrequests }
+					));
+				}
+			});
 		}
 	}
 ]
