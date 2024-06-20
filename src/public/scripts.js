@@ -48,6 +48,20 @@ function empty(element) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+	document.getElementById('integerForm').addEventListener('submit', function (event) {
+		event.preventDefault(); // Prevent the default form submission
+
+		const integerValue = document.getElementById('integerInput').value;
+
+		// Make a POST request to the same server
+		fetch('/api/nr', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ nr: parseInt(integerValue, 10) })
+		})
+	})
 	const socket = new WebSocket('ws://localhost:3001');
 
 	socket.onmessage = function (event) {
@@ -110,19 +124,4 @@ document.addEventListener('DOMContentLoaded', () => {
 	socket.onerror = function (error) {
 		console.log("WebSocket error:", error);
 	};
-})
-
-document.getElementById('integerForm').addEventListener('submit', function (event) {
-	event.preventDefault(); // Prevent the default form submission
-
-	const integerValue = document.getElementById('integerInput').value;
-
-	// Make a POST request to the same server
-	fetch('/api/nr', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ nr: parseInt(integerValue, 10) })
-	})
 })

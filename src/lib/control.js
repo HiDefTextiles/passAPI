@@ -11,6 +11,7 @@ export var nr = 0;
 let old_nr = -1;
 export const postrequests = [];
 const sendit = () => wss.clients.forEach((client) => {
+	console.log('what')
 	if (client.readyState === WebSocket.OPEN) {
 		client.send(JSON.stringify(
 			{ nr, postrequests }
@@ -18,13 +19,9 @@ const sendit = () => wss.clients.forEach((client) => {
 	}
 });
 const handler = (start, pattern, msg) => {
-	if (old_nr === nr) {
-		return
-	}
 	sendit()
-	old_nr = nr;
-	const munstur = pattern[nr].replaceAll(',', '').split('');
-	nr += 1;
+	const munstur = pattern[nr++].replaceAll(',', '').split('');
+	// nr += 1;
 	const litur = Math.max(...munstur);
 	// ((status === "R" && nr % 2 !== 0) || (nr > 1 && status === "L" && nr % 2 === 0))
 	// 	&& nr < pattern.length &&
@@ -114,5 +111,6 @@ parser.on('data', data => {
 			}
 		}
 	}
+	console.log(data, nr)
 }
 )
