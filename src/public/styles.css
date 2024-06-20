@@ -1,0 +1,18 @@
+.taflann {
+	width: 100%;
+}
+tr {
+	display: grid;
+		      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+}
+td {
+	align-self: center;
+	justify-self: center;
+}
+.mark {
+	border: 1px solid black;
+	display: grid;
+	      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+	width: 100%;
+	/* background-color: black; */
+}

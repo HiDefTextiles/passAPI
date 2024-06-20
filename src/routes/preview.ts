@@ -40,7 +40,18 @@ export const previewRouter = express.Router();
 // 		}
 // 	});
 // }, 1000);
-
+// previewRouter.post('/', async (req, res) => {
+// 	await fetch(
+// 		'http://localhost:3000/api/nr', {
+// 		method: 'POST',
+// 		headers: {
+// 			"Content-Type": "application/json",
+// 			// 'Content-Type': 'application/x-www-form-urlencoded',
+// 		},
+// 		body: JSON.stringify(req.body)
+// 	}
+// 	)
+// })
 
 previewRouter.get('/', (req, res) => {
 	const __filename = fileURLToPath(import.meta.url);

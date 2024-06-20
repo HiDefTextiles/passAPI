@@ -33,9 +33,9 @@ portSerial.on("open", () => {
 /**
  * Les g0gn frá arduino
  */
-parser.on('data', data => {
-	// console.log('got word from arduino:', data); // Þetta virkar líka
-});
+// parser.on('data', data => {
+// 	// console.log('got word from arduino:', data); // Þetta virkar líka
+// });
 
 /**
  * Sendir streng á arduino;

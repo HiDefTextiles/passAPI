@@ -42,7 +42,7 @@ Munstrið er á forminu þar sem hver lína inniheldur 0 eða 1-4;
 Sléttar tölur 0,2,4,6.... er þegar vagninn fer frá vinstri til hægri,
 frá enda að litaskipti
 Odda tölur er þegar vagninn fer frá litaskipti að enda
-Það er skrifað í console hor megin þú ert við munstrið og hvaða línu þú ert að fara að gera næst
+Það er skrifað í console hvor megin þú ert við munstrið og hvaða línu þú ert að fara að gera næst
 Einnig er gefin litur sem á að vera í notkun 1-4
 Litur er fenginn með því að taka hæsta rauntölu gildið í línu og prenta það út svo þið vitið hvaða litur er í gangi,
 11:22

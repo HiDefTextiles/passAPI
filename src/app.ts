@@ -8,12 +8,18 @@ import http from 'http';
 import { WebSocketServer } from "ws";
 import { nr, postrequests } from './lib/control.js';
 import { stringify } from 'querystring';
+import exp from 'constants';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 export const app = express();
 
-app.use(express.json());
+app.use('/', express.json());
+
+const path = dirname(fileURLToPath(import.meta.url));
 
 app.use(cors);
+app.use('/', express.static(join(path, 'public')))
 app.use('/', previewRouter)
 app.use('/api', APIrouter);
 

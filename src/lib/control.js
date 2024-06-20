@@ -8,21 +8,47 @@ import WebSocket from "ws";
 // import { writeDataToArduino, parser } from './serial.js'
 
 export var nr = 0;
+let old_nr = -1;
 export const postrequests = [];
+const sendit = () => wss.clients.forEach((client) => {
+	if (client.readyState === WebSocket.OPEN) {
+		client.send(JSON.stringify(
+			{ nr, postrequests }
+		));
+	}
+});
 const handler = (start, pattern, msg) => {
-	wss.clients.forEach((client) => {
-		if (client.readyState === WebSocket.OPEN) {
-			client.send(JSON.stringify(
-				{ nr, postrequests }
-			));
-		}
-	});
-	const munstur = pattern[nr++].replaceAll(',', '').split('');
-	const litur = Math.max(...munstur)
+	if (old_nr === nr) {
+		return
+	}
+	sendit()
+	old_nr = nr;
+	const munstur = pattern[nr].replaceAll(',', '').split('');
+	nr += 1;
+	const litur = Math.max(...munstur);
+	// ((status === "R" && nr % 2 !== 0) || (nr > 1 && status === "L" && nr % 2 === 0))
+	// 	&& nr < pattern.length &&
 	writeDataToArduino(`${start}${munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')}`);
 	console.log(`litur=${litur} ${(msg && msg[nr - 1]) ? ', msg: ' + msg[nr - 1] : ''}`)
 }
-
+export const postnr = [
+	body("nr").trim()
+		.escape()
+		.notEmpty()
+		.withMessage('missing nr value')
+		.isInt()
+		.withMessage('has to be integer.'),
+	validationCheck,
+	async (req, res) => {
+		// { nr } = req.body;
+		const new_nr = Number.parseInt(req.body.nr)
+		nr = new_nr < nr ? new_nr : nr;
+		sendit();
+		const { start, pattern, msg } = postrequests[0];
+		handler(start, pattern, msg);
+		res.json('línu breytt')
+	}
+]
 export const postPattern = [
 	body("start")
 		.trim()
@@ -66,19 +92,14 @@ export const postPattern = [
 			res.json("Munstur sett í vinnslu.");
 		} else {
 			res.json(`Munstur sett í bið, þú ert númer ${postrequests.length} í röðinni ;)`);
-			wss.clients.forEach((client) => {
-				if (client.readyState === WebSocket.OPEN) {
-					client.send(JSON.stringify(
-						{ nr, postrequests }
-					));
-				}
-			});
+			sendit();
 		}
 	}
 ]
 
 parser.on('data', data => {
 	if (postrequests.length) {
+		let i = 1;
 		const { start, pattern, msg } = postrequests[0];
 		const linur = pattern.length;
 		((data === "R" && nr % 2 !== 0) || (nr > 1 && data === "L" && nr % 2 === 0))
@@ -86,8 +107,12 @@ parser.on('data', data => {
 		if (nr >= linur) {
 			postrequests.shift();
 			nr = 0;
+			if (postrequests[0]) {
+				nr = 0;
+				const newpattern = postrequests[0]
+				handler(newpattern.start, newpattern.pattern, newpattern.msg)
+			}
 		}
 	}
-	console.log(data, nr,);
 }
 )

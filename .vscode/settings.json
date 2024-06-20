@@ -4,7 +4,7 @@
 	"editor.formatOnSave": true,
 	"editor.formatOnPaste": true,
 	"editor.codeActionsOnSave": {
-	  "source.fixAll.eslint": "explicit"
+		"source.fixAll.eslint": "explicit"
 	},
 	"C_Cpp.errorSquiggles": "disabled",
 	"python.REPL.enableREPLSmartSend": false,
@@ -13,5 +13,8 @@
 	},
 	"[jsonc]": {
 		"editor.defaultFormatter": "vscode.json-language-features"
+	},
+	"[html]": {
+		"editor.defaultFormatter": "vscode.html-language-features"
 	}
 }

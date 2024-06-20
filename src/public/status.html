@@ -1,34 +1,92 @@
 <!DOCTYPE html>
 <html lang="is">
+<!-- Þetta er harðkóðað html sýnidæmi til að sýna mögulega útfærslu -->
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
+	<link rel="stylesheet" href="./styles.css">
 </head>
 
 <body>
-	<h1>WebSocket Example</h1>
-	<p>Value from server: <span id="server-value">Waiting for value...</span></p>
-	<script>
-		const socket = new WebSocket('ws://localhost:3001');
+	<header>
+		<h1>HelgaDef passapí</h1>
+		<nav>
+			<menu>
+				<li>
+					<a href="/api">
+						api
+					</a>
+				</li>
+			</menu>
+		</nav>
+	</header>
+	<main>
+		<p>Fjöldi munstra: <span id="server-value">Waiting for value...</span></p>
 
-		socket.onmessage = function (event) {
-			document.getElementById('server-value').textContent = event.data;
-		};
+		<table class="taflann">
+			<caption>
+				<h2>Núverandi munstur</h2>
+				<caption>
+				<thead id="bed">
 
-		socket.onopen = function (event) {
-			console.log("WebSocket is open now.");
-		};
+				</thead>
+			<tbody id="munstur">
 
-		socket.onclose = function (event) {
-			console.log("WebSocket is closed now.");
-		};
+			</tbody>
 
-		socket.onerror = function (error) {
-			console.log("WebSocket error:", error);
-		};
-	</script>
+		</table>
+		<form id="integerForm" action="/api/nr" method="post">
+			<label for="integerInput">Veldu nýja línu:</label>
+			<input type="number" min="0" step="1" max="1" id="integerInput" name="integerInput" required>
+			<button type="submit">Breyta</button>
+		</form>
+
+		<h2>Leiðbeiningar</h2>
+		<ul>
+			<li>
+				Sléttartölur
+				<ul>
+					<li>→ stillir munstur</li>
+					<li>← prjónar munstur</li>
+				</ul>
+			</li>
+			<li>
+				Oddatölur
+				<ul>
+					<li>← stillir munstur</li>
+					<li>→ prjónar munstur</li>
+				</ul>
+			</li>
+			<li>
+				→
+				<ul>
+					<li>
+						Stillir sléttatölu munstur (nr: 2)
+					</li>
+					<li>
+						prjónar oddatölu munstur (nr: 1)
+					</li>
+				</ul>
+			</li>
+			<li>
+				←
+				<ul>
+					<li>
+						Prjónar sléttatölu munstur (nr: 2)
+					</li>
+					<li>
+						stillir oddatölur munstur (nr: 3)
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</main>
+	<footer>
+		Mbkv Elli
+	</footer>
+	<script src="scripts.js"></script>
 </body>
 
 </html>

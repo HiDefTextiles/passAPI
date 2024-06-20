@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { catchErrors } from '../lib/catch-errors.js';
-import { postPattern } from '../lib/control.js'
+import { postPattern, postnr } from '../lib/control.js'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -52,3 +52,4 @@ APIrouter.get('/pattern', (req, res) => {
 	const __dirname = dirname(__filename);
 	res.sendFile(path.join(__dirname, '../public/status.html'));
 })
+APIrouter.post('/nr', postnr)
