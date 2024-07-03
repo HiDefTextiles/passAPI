@@ -19,6 +19,11 @@
 						api
 					</a>
 				</li>
+				<li>
+					<a href="/make">
+						Búa til munstur
+					</a>
+				</li>
 			</menu>
 		</nav>
 	</header>
@@ -37,13 +42,13 @@
 			</tbody>
 
 		</table>
-		<form id="integerForm" action="/api/nr" method="post">
+		<form id="integerForm" action="/api/nr" method="post" class="custom-number-input">
 			<label for="integerInput">Veldu nýja línu:</label>
 			<input type="number" min="0" step="1" max="1" id="integerInput" name="integerInput" required>
-			<button type="submit">Breyta</button>
+			<button type="submit" class="buttonChange">Breyta</button>
 		</form>
 		<form id="patternDeleteForm" action="/api/pattern" method="delete">
-			<button type="submit">Eyða munstri</button>
+			<button type="submit" class="buttonDelete">Eyða munstri</button>
 		</form>
 
 		<h2>Leiðbeiningar</h2>

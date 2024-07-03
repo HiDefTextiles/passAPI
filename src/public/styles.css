@@ -16,3 +16,27 @@ td {
 	width: 100%;
 	/* background-color: black; */
 }
+
+button, input {
+	padding: 0.5em 1em 0.75em;
+		border: black solid 1px;
+	border-radius: 1em;
+	/* width: 2em; */
+}
+input {
+	width: 2.5em;
+}
+
+.buttonDelete {
+	background-color: red;
+	text-shadow: white 1px 1px 7px;
+	filter: drop-shadow(3px 3px 0px red);
+
+}
+.buttonChange {
+	background-color: yellow;
+	text-shadow: white 1px 1px 7px;
+	filter: drop-shadow(3px 3px 0px yellow	);
+
+
+}
