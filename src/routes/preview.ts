@@ -58,3 +58,10 @@ previewRouter.get('/', (req, res) => {
 	const __dirname = dirname(__filename);
 	res.sendFile(join(__dirname, '../public/status.html'));
 })
+
+previewRouter.get('/make', (req, res) => {
+	console.log('make')
+	const __filename = fileURLToPath(import.meta.url);
+	const __dirname = dirname(__filename);
+	res.sendFile(join(__dirname, '../public/make.html'));
+})

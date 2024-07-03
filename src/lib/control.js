@@ -11,7 +11,6 @@ export var nr = 0;
 let old_nr = -1;
 export const postrequests = [];
 const sendit = () => wss.clients.forEach((client) => {
-	console.log('what')
 	if (client.readyState === WebSocket.OPEN) {
 		client.send(JSON.stringify(
 			{ nr, postrequests }
@@ -20,12 +19,13 @@ const sendit = () => wss.clients.forEach((client) => {
 });
 const handler = (start, pattern, msg) => {
 	sendit()
-	const munstur = pattern[nr++].replaceAll(',', '').split('');
-	// nr += 1;
+	const munstur = pattern[nr].replaceAll(',', '').split('');
+	nr += 1;
 	const litur = Math.max(...munstur);
 	// ((status === "R" && nr % 2 !== 0) || (nr > 1 && status === "L" && nr % 2 === 0))
 	// 	&& nr < pattern.length &&
-	writeDataToArduino(`${start}${munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')}`);
+	const sp = (Math.abs(start) > 9 ? start : `0${start}`)
+	writeDataToArduino(`${sp < 0 ? sp : `+${sp}`}${munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')}`);
 	console.log(`litur=${litur} ${(msg && msg[nr - 1]) ? ', msg: ' + msg[nr - 1] : ''}`)
 }
 export const postnr = [
@@ -94,6 +94,14 @@ export const postPattern = [
 	}
 ]
 
+export const deletePattern = [
+	async (req, res) => {
+		postrequests.shift();
+		sendit();
+		res.json('búið að eyða munstri');
+	}
+]
+
 parser.on('data', data => {
 	if (postrequests.length) {
 		let i = 1;
@@ -110,7 +118,8 @@ parser.on('data', data => {
 				handler(newpattern.start, newpattern.pattern, newpattern.msg)
 			}
 		}
-	}
-	console.log(data, nr)
+	};
+	sendit();
+	console.log(data, nr);
 }
 )
