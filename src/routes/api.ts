@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { catchErrors } from '../lib/catch-errors.js';
-import { postPattern, postnr } from '../lib/control.js'
+import { deletePattern, postPattern, postnr } from '../lib/control.js'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -47,6 +47,7 @@ APIrouter.get('/', catchErrors(index));
 
 // APIrouter.get('/pattern',)
 APIrouter.post('/pattern', postPattern)
+APIrouter.delete('/pattern', deletePattern)
 APIrouter.get('/pattern', (req, res) => {
 	const __filename = fileURLToPath(import.meta.url);
 	const __dirname = dirname(__filename);

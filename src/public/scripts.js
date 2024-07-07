@@ -48,12 +48,35 @@ function empty(element) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+	document.getElementById('integerForm').addEventListener('submit', function (event) {
+		event.preventDefault(); // Prevent the default form submission
+
+		const integerValue = document.getElementById('integerInput').value;
+
+		// Make a POST request to the same server
+		fetch('/api/nr', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ nr: parseInt(integerValue, 10) })
+		})
+	});
+	document.getElementById('patternDeleteForm').addEventListener('submit', (event) => {
+		event.preventDefault();
+		if (window.confirm('Viltu eyða núverandi munstri?')) {
+			fetch('/api/pattern', {
+				method: 'DELETE'
+			})
+		}
+	})
 	const socket = new WebSocket('ws://localhost:3001');
 	const WebSocketStatus = document.body.querySelector('.WebSocketStatus')
 
 
 	socket.onmessage = function (event) {
 		const obj = JSON.parse(event.data);
+		console.log(obj.nr)
 		if (obj && obj.postrequests) {
 			const value = document.getElementById('server-value');
 			const gamlagildi = value?.innerHTML;
@@ -61,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (value) value.innerText = nyttgildi;
 			const nails = document.body.querySelector('#bed');
 			const sequence = document.body.querySelector('#munstur');
-			if (obj.postrequests[0]) {
+			if (obj.postrequests.length) {
 				const pattern = obj.postrequests[0].pattern;
 				const linur = pattern.length
 				const start = Number(obj.postrequests[0].start);
@@ -91,11 +114,15 @@ document.addEventListener('DOMContentLoaded', () => {
 						tala.max = linur - 1
 					}
 				}
+			} else {
+				empty(nails);
+				empty(sequence);
 			}
 			const mark = document.body.querySelector('.mark');
 			if (sequence && sequence.childElementCount && mark && (Number.parseInt(mark.id) !== Number(obj.nr))) {
 				mark.classList.remove('mark')
-				const newmark = document.getElementById(`${obj.nr}l`);
+				const newmark = document.getElementById(`${obj.nr ? obj.nr : 0}l`);
+				console.log(obj.nr)
 				newmark && newmark.classList.add('mark')
 			}
 		}
@@ -115,19 +142,4 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (WebSocketStatus) WebSocketStatus.innerHTML = '⚠ tenging villa';
 		console.log("WebSocket error:", error);
 	};
-})
-
-document.getElementById('integerForm').addEventListener('submit', function (event) {
-	event.preventDefault(); // Prevent the default form submission
-
-	const integerValue = document.getElementById('integerInput').value;
-
-	// Make a POST request to the same server
-	fetch('/api/nr', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ nr: parseInt(integerValue, 10) })
-	})
 })
