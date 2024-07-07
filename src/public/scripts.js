@@ -35,7 +35,7 @@ const arrayRange =
 /**
 * Tekið úr vefforitun 1 hjá Ólafi-osk
 * Fjarlægir öll börn `element`.
-* @param {HTMLElement} element Element sem á að tæma
+* @param {HTMLElement | Element} element Element sem á að tæma
 */
 function empty(element) {
 	if (!element || !element.firstChild) {
@@ -49,34 +49,36 @@ function empty(element) {
 
 document.addEventListener('DOMContentLoaded', () => {
 	const socket = new WebSocket('ws://localhost:3001');
+	const WebSocketStatus = document.body.querySelector('.WebSocketStatus')
+
 
 	socket.onmessage = function (event) {
 		const obj = JSON.parse(event.data);
 		if (obj && obj.postrequests) {
 			const value = document.getElementById('server-value');
-			const gamlagildi = value.innerHTML;
+			const gamlagildi = value?.innerHTML;
 			const nyttgildi = obj.postrequests.length;
-			value.innerText = nyttgildi;
+			if (value) value.innerText = nyttgildi;
 			const nails = document.body.querySelector('#bed');
 			const sequence = document.body.querySelector('#munstur');
 			if (obj.postrequests[0]) {
 				const pattern = obj.postrequests[0].pattern;
 				const linur = pattern.length
 				const start = Number(obj.postrequests[0].start);
-				if (pattern && ((nyttgildi !== gamlagildi && nyttgildi <= gamlagildi) || (nyttgildi && !sequence.childElementCount))) {
-					empty(nails);
-					empty(sequence);
+				if (pattern && ((gamlagildi && nyttgildi !== gamlagildi && nyttgildi <= gamlagildi) || (nyttgildi && !sequence?.childElementCount))) {
+					nails && empty(nails);
+					sequence && empty(sequence);
 					let end = 0;
 					pattern.forEach((stak, num) => {
 						const pattmeontheback = stak.replaceAll(',', '').split('');
 						end = pattmeontheback.length;
-						sequence.appendChild(
+						sequence && sequence.appendChild(
 							el('tr', { class: `${num === obj.nr ? 'mark' : ''}`, id: String(num) + 'l' }, el('th', {}, num),
 								...pattmeontheback.map(values => el('td', {}, values)), el('td', {}, obj.postrequests[0].msg && obj.postrequests[0].msg[num] || '')
 							)
 						)
 					})
-					nails.appendChild(
+					nails && nails.appendChild(
 						el('tr', {},
 							el('th', {}, 'nr'),
 							...(arrayRange(start, start + (end - 1), 1).map(
@@ -91,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				}
 			}
 			const mark = document.body.querySelector('.mark');
-			if (sequence.childElementCount && mark && (Number.parseInt(mark.id) !== Number(obj.nr))) {
+			if (sequence && sequence.childElementCount && mark && (Number.parseInt(mark.id) !== Number(obj.nr))) {
 				mark.classList.remove('mark')
 				const newmark = document.getElementById(`${obj.nr}l`);
 				newmark && newmark.classList.add('mark')
@@ -100,14 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	};
 
 	socket.onopen = function (event) {
+		if (WebSocketStatus) WebSocketStatus.innerHTML = '✅ tenging virk';
 		console.log("WebSocket is open now.");
 	};
 
 	socket.onclose = function (event) {
+		if (WebSocketStatus) WebSocketStatus.innerHTML = '⛔ tenging slökkt';
 		console.log("WebSocket is closed now.");
 	};
 
 	socket.onerror = function (error) {
+		if (WebSocketStatus) WebSocketStatus.innerHTML = '⚠ tenging villa';
 		console.log("WebSocket error:", error);
 	};
 })
