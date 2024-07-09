@@ -18,18 +18,22 @@ const sendit = () => wss.clients.forEach((client) => {
 	}
 });
 const handler = (start, pattern, msg) => {
-	sendit()
 	const munstur = pattern[nr].replaceAll(',', '').split('');
-	nr += 1;
 	const litur = Math.max(...munstur);
 	// ((status === "R" && nr % 2 !== 0) || (nr > 1 && status === "L" && nr % 2 === 0))
-	// 	&& nr < pattern.length &&
-	const sp = (Math.abs(start) > 9 ? start : `0${start}`)
-	writeDataToArduino(`${sp < 0 ? sp : `+${sp}`}${munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')}`);
-	console.log(`litur=${litur} ${(msg && msg[nr - 1]) ? ', msg: ' + msg[nr - 1] : ''}`)
+	// 	&& nr < pattern.length && 
+	// console.log(munstur);
+	const sp = (Math.abs(start) > 9 ? start : `0${start}`);
+	const stilling = munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')
+	writeDataToArduino(`${sp < 0 ? sp : `+${sp}`}${stilling}`);
+	// console.log(`litur=${litur} ${(msg && msg[nr]) ? ', msg: ' + msg[nr] : ''}`);
+	console.log(stilling === munstur.join().replaceAll(',', ''))
+	sendit();
+	nr += 1;
 }
 export const postnr = [
-	body("nr").trim()
+	body("nr")
+		.trim()
 		.escape()
 		.notEmpty()
 		.withMessage('missing nr value')
@@ -103,6 +107,7 @@ export const deletePattern = [
 ]
 
 parser.on('data', data => {
+	console.log(data, nr);
 	if (postrequests.length) {
 		let i = 1;
 		const { start, pattern, msg } = postrequests[0];
@@ -114,12 +119,12 @@ parser.on('data', data => {
 			nr = 0;
 			if (postrequests[0]) {
 				nr = 0;
-				const newpattern = postrequests[0]
-				handler(newpattern.start, newpattern.pattern, newpattern.msg)
+				const newpattern = postrequests[0];
+				handler(newpattern.start, newpattern.pattern, newpattern.msg);
 			}
 		}
 	};
 	sendit();
-	console.log(data, nr);
+	// console.log(data, nr);
 }
 )
