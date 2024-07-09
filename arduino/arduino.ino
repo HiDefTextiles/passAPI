@@ -14,6 +14,7 @@ volatile int csenseNow = 0;
 
 volatile int crefNow = 0;
 
+volatile int direction = 2;
 // sensor change
 volatile boolean interrupted = false;
 // direction
@@ -77,8 +78,9 @@ void interrupt_CSENSE()
 			{
 				value = array[index + 10];
 			}
-			else if (index == -11)
+			else if (index < -11 && direction != 1)
 			{
+				direction = 1;
 				Serial.println('L');
 			}
 			digitalWrite(PIN_NEEDLE_RTL, value);
@@ -96,12 +98,22 @@ void interrupt_CSENSE()
 			{
 				value = array[index];
 			}
-			else if (index == arraysize)
+			else if (index > arraysize && direction != 0)
 			{
+				direction = 0;
 				Serial.println('R');
 			}
 			digitalWrite(PIN_NEEDLE_LTR, value);
 		}
+		case 30:
+		{
+			if (index >= arraysize && direction != 0)
+			{
+				direction = 0;
+				Serial.println('R');
+			}
+		}
+		break;
 		default:
 			break;
 		}
