@@ -107,7 +107,7 @@ export const deletePattern = [
 ]
 
 parser.on('data', data => {
-	console.log(data, nr);
+	// console.log(data, nr);
 	if (postrequests.length) {
 		let i = 1;
 		const { start, pattern, msg } = postrequests[0];
@@ -124,7 +124,7 @@ parser.on('data', data => {
 			}
 		}
 	};
-	sendit();
-	// console.log(data, nr);
+	// sendit();
+	console.log(data, nr);
 }
 )
