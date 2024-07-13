@@ -18,17 +18,15 @@ const sendit = () => wss.clients.forEach((client) => {
 	}
 });
 const handler = (start, pattern, msg) => {
+	sendit();
 	const munstur = pattern[nr].replaceAll(',', '').split('');
 	const litur = Math.max(...munstur);
 	// ((status === "R" && nr % 2 !== 0) || (nr > 1 && status === "L" && nr % 2 === 0))
 	// 	&& nr < pattern.length && 
-	// console.log(munstur);
 	const sp = (Math.abs(start) > 9 ? start : `0${start}`);
 	const stilling = munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')
 	writeDataToArduino(`${sp < 0 ? sp : `+${sp}`}${stilling}`);
 	// console.log(`litur=${litur} ${(msg && msg[nr]) ? ', msg: ' + msg[nr] : ''}`);
-	console.log(stilling === munstur.join().replaceAll(',', ''))
-	sendit();
 	nr += 1;
 }
 export const postnr = [
@@ -107,7 +105,7 @@ export const deletePattern = [
 ]
 
 parser.on('data', data => {
-	// console.log(data, nr);
+	console.log(data, nr);
 	if (postrequests.length) {
 		let i = 1;
 		const { start, pattern, msg } = postrequests[0];
@@ -125,6 +123,5 @@ parser.on('data', data => {
 		}
 	};
 	// sendit();
-	console.log(data, nr);
 }
 )

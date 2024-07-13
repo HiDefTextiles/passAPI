@@ -46,6 +46,39 @@ function empty(element) {
 	}
 }
 
+function highlightRow(rowIndex) {
+	const num = document.getElementById('number');
+	let sin = 0;
+
+	const joke = document.getElementById(`munstur`);
+
+	const rows = joke.children;
+
+	rows[rowIndex].classList.add('current');
+	// console.log(sin++);
+
+	// Remove existing highlights
+	for (let i = 0; i < rows.length; i++) {
+		rows[i].classList.remove('highlight');
+		if (i > rowIndex - 4 && i < rowIndex + 4) {
+			rows[i].classList.add('highlight');
+			rows[i].classList.remove('not_it');
+		} else {
+			!rows[i].classList.contains('not_it') && rows[i].add('not_it')
+		}
+		// rows[i].classList.add('lowlight');
+	}
+	if (num) {
+		num.innerHTML = `${rowIndex}/${rows.length}`
+	}
+
+	// // Add highlight to the selected row and the surrounding rows
+	// for (let i = Math.max(rowIndex - 3, 0); i <= Math.min(rowIndex + 3, rows.length - 1); i++) {
+	// 	rows[i].classList.add('highlight');
+	// }
+}
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('integerForm').addEventListener('submit', function (event) {
@@ -77,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	socket.onmessage = function (event) {
 		const obj = JSON.parse(event.data);
 		console.log(obj.nr)
+		// obj && obj.nr && highlightRow(obj.nr);
 		if (obj && obj.postrequests) {
 			const value = document.getElementById('server-value');
 			const gamlagildi = value?.innerHTML;
@@ -96,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 						const pattmeontheback = stak.replaceAll(',', '').split('');
 						end = pattmeontheback.length;
 						sequence && sequence.appendChild(
-							el('tr', { class: `${num === obj.nr ? 'mark' : ''}`, id: String(num) + 'l' }, el('th', {}, num),
+							el('tr', { class: `${num === (obj.nr !== 0 ? obj.nr - 1 : 0) ? 'mark' : ''} not_it`, id: String(num) + 'l' }, el('th', {}, num),
 								...pattmeontheback.map(values => el('td', {}, values)), el('td', {}, obj.postrequests[0].msg && obj.postrequests[0].msg[num] || '')
 							)
 						)
@@ -113,6 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
 					if (tala && (tala.max != linur - 1)) {
 						tala.max = linur - 1
 					}
+					highlightRow(obj.nr)
+					// highlightRow(obj.nr)
 				}
 			} else {
 				empty(nails);
@@ -121,9 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			const mark = document.body.querySelector('.mark');
 			if (sequence && sequence.childElementCount && mark && (Number.parseInt(mark.id) !== Number(obj.nr))) {
 				mark.classList.remove('mark')
-				const newmark = document.getElementById(`${obj.nr ? obj.nr : 0}l`);
-				console.log(obj.nr)
+				const newmark = document.getElementById(`${obj.nr ? obj.nr - 1 : 0}l`);
 				newmark && newmark.classList.add('mark')
+				// document
+				highlightRow(obj.nr);
+				// const num = document.getElementById('number')
 			}
 		}
 	};
