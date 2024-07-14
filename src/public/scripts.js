@@ -69,7 +69,7 @@ function highlightRow(rowIndex) {
 		// rows[i].classList.add('lowlight');
 	}
 	if (num) {
-		num.innerHTML = `${rowIndex}/${rows.length}`
+		num.innerHTML = `${!rowIndex ? 0 : rowIndex - 1}/${rows.length}`
 	}
 
 	// // Add highlight to the selected row and the surrounding rows

@@ -1,0 +1,215 @@
+/* Reset og border-box á allt */
+$yellow: rgb(253, 253, 150);
+$red: rgb(255, 105, 97);
+;
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+.sr-only:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+.not_it {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	// height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+.not_it .highlight {
+	width: fit-content;
+	height: fit-content;
+}
+
+.taflann {
+	width: 100%;
+}
+
+tr {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+}
+
+td {
+	align-self: center;
+	justify-self: center;
+}
+
+.mark {
+	border: 1px solid black;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+	width: 100%;
+	/* background-color: black; */
+}
+
+button,
+input {
+	padding: 0.5em 1em 0.75em;
+	border: black solid 1px;
+	border-radius: 1em;
+	/* width: 2em; */
+}
+
+button:active {
+	filter: drop-shadow(0px 0px 0px black) !important;
+}
+
+
+.buttonDelete {
+	background: linear-gradient(to bottom right, white, $red);
+	// text-shadow: white 1px 1px 12px;
+	filter: drop-shadow(3px 3px 0px red);
+	transition: filter 1s;
+}
+
+.buttonChange {
+	background: linear-gradient(to bottom right, white, $yellow, yellow);
+	// text-shadow: white 1px 1px 7px;
+	filter: drop-shadow(3px 3px 0px yellow);
+
+	transition: filter 1s;
+}
+
+
+
+.form {
+	font-size: 1.25rem;
+	// margin: 0 0 0;
+	font-family: inherit;
+	width: fit-content;
+	margin: 1em auto;
+	// display: flex;
+	// gap: 0em;
+	// flex-direction: column;
+	// width: 90%;
+	// filter: drop-shadow(0px 0px 50px #000000);
+
+	.field {
+		font-family: inherit;
+		margin: 1em 0 0;
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: column;
+		gap: 1em;
+		width: fit-content;
+
+
+		&:has(textarea:not(:placeholder-shown)),
+		&:has(textarea:focus),
+		&:has(input:not(:placeholder-shown)),
+		&:has(input:focus) {
+			label {
+				transform: translate(0, -1.25em);
+				padding: 0 0 0 0;
+				pointer-events: none;
+			}
+		}
+
+		input:focus+label,
+		input:not(:placeholder-shown)+label {
+			transform: translate(0, -1.25em);
+			padding: 0 0 0 0;
+			pointer-events: none;
+		}
+
+		label {
+			font-family: inherit;
+			font-weight: 100;
+			transition: transform 0.33s ease-out, padding 1s ease;
+			position: absolute;
+			padding: 0.5em 0 0 1em;
+			pointer-events: none;
+			background: transparent;
+			// opacity: 50%;
+		}
+
+		textarea {
+			height: 15em;
+			width: 15em;
+		}
+
+		textarea,
+		input {
+			pointer-events: auto;
+			font-size: 1.25rem;
+			font-family: inherit;
+			transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+			box-shadow: 0 0 0 black;
+			background-color: inherit;
+			border-radius: 1em;
+			// padding: 0 1em;
+			padding: 0.5em 1em;
+			// color: white;
+			// width: 100%;
+			// border: 1px solid inherit;
+
+			&:focus {
+				outline: none;
+				border-color: white;
+				// box-shadow: 0em 0.125em 0.75em 0.125em black;
+				transition: border 0.25s;
+
+				label {
+					opacity: 100%;
+				}
+			}
+
+			// padding: 0.5em 0;
+			// width: 100%;
+			// border: 1px solid inherit;
+		}
+	}
+
+	.button {
+		padding: 0.25em 1em 0.75em;
+		// margin: 2rem 0 0;
+		font-size: 1.25rem;
+		// width: 100%;
+		height: 2em;
+		// color: white;
+		font-weight: 100;
+		// background: transparent;
+		border-radius: 1em;
+
+		transition: scale 1s;
+
+		&:hover,
+		&:focus-visible {
+			cursor: pointer;
+			font-weight: 400;
+			// scale: 1.01;
+			transition: scale 1s;
+			// background-color: white;
+			color: inherit;
+			border-color: inherit;
+			outline: none;
+			// filter: drop-shadow(3px 3px 0px white);
+			transition: filter 1s;
+			// border-color: white;
+			// box-shadow: 0em 0.005em 1.95em 0.005em black;
+		}
+	}
+}

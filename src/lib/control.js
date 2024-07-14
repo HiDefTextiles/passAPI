@@ -119,9 +119,12 @@ parser.on('data', data => {
 				nr = 0;
 				const newpattern = postrequests[0];
 				handler(newpattern.start, newpattern.pattern, newpattern.msg);
+			} else {
+				sendit()
 			}
 		}
+	} else {
+		sendit();
 	};
-	// sendit();
 }
 )

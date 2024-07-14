@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* Reset og border-box á allt */
 * {
   margin: 0;
@@ -25,68 +26,141 @@ html {
 }
 
 .not_it {
-	  clip: rect(0 0 0 0);
-  clip-path: inset(50%); */
-  height: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
   overflow: hidden;
   position: absolute;
   white-space: nowrap;
   width: 1px;
 }
+
 .not_it .highlight {
-	width: fit-content;
-	height: fit-content;
+  width: fit-content;
+  height: fit-content;
 }
 
 .taflann {
-	width: 100%;
+  width: 100%;
 }
 
 tr {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
 }
 
 td {
-	align-self: center;
-	justify-self: center;
+  align-self: center;
+  justify-self: center;
 }
 
 .mark {
-	border: 1px solid black;
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-	width: 100%;
-	/* background-color: black; */
+  border: 1px solid black;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  width: 100%;
+  /* background-color: black; */
 }
 
 button,
 input {
-	padding: 0.5em 1em 0.75em;
-	border: black solid 1px;
-	border-radius: 1em;
-	/* width: 2em; */
+  padding: 0.5em 1em 0.75em;
+  border: black solid 1px;
+  border-radius: 1em;
+  /* width: 2em; */
 }
 
 button:active {
-	filter: drop-shadow(0px 0px 0px black) !important;
-}
-
-input {
-	width: 2.5em;
+  filter: drop-shadow(0px 0px 0px black) !important;
 }
 
 .buttonDelete {
-	background-color: red;
-	text-shadow: white 1px 1px 7px;
-	filter: drop-shadow(3px 3px 0px red);
-
+  background: linear-gradient(to bottom right, white, rgb(255, 105, 97));
+  filter: drop-shadow(3px 3px 0px red);
+  transition: filter 1s;
 }
 
 .buttonChange {
-	background-color: yellow;
-	text-shadow: white 1px 1px 7px;
-	filter: drop-shadow(3px 3px 0px yellow);
-
-
+  background: linear-gradient(to bottom right, white, rgb(253, 253, 150), yellow);
+  filter: drop-shadow(3px 3px 0px yellow);
+  transition: filter 1s;
 }
+
+.form {
+  font-size: 1.25rem;
+  font-family: inherit;
+  width: fit-content;
+  margin: 1em auto;
+}
+.form .field {
+  font-family: inherit;
+  margin: 1em 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1em;
+  width: fit-content;
+}
+.form .field:has(textarea:not(:placeholder-shown)) label, .form .field:has(textarea:focus) label, .form .field:has(input:not(:placeholder-shown)) label, .form .field:has(input:focus) label {
+  transform: translate(0, -1.25em);
+  padding: 0 0 0 0;
+  pointer-events: none;
+}
+.form .field input:focus + label,
+.form .field input:not(:placeholder-shown) + label {
+  transform: translate(0, -1.25em);
+  padding: 0 0 0 0;
+  pointer-events: none;
+}
+.form .field label {
+  font-family: inherit;
+  font-weight: 100;
+  transition: transform 0.33s ease-out, padding 1s ease;
+  position: absolute;
+  padding: 0.5em 0 0 1em;
+  pointer-events: none;
+  background: transparent;
+}
+.form .field textarea {
+  height: 15em;
+  width: 15em;
+}
+.form .field textarea,
+.form .field input {
+  pointer-events: auto;
+  font-size: 1.25rem;
+  font-family: inherit;
+  transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+  box-shadow: 0 0 0 black;
+  background-color: inherit;
+  border-radius: 1em;
+  padding: 0.5em 1em;
+}
+.form .field textarea:focus,
+.form .field input:focus {
+  outline: none;
+  border-color: white;
+  transition: border 0.25s;
+}
+.form .field textarea:focus label,
+.form .field input:focus label {
+  opacity: 100%;
+}
+.form .button {
+  padding: 0.25em 1em 0.75em;
+  font-size: 1.25rem;
+  height: 2em;
+  font-weight: 100;
+  border-radius: 1em;
+  transition: scale 1s;
+}
+.form .button:hover, .form .button:focus-visible {
+  cursor: pointer;
+  font-weight: 400;
+  transition: scale 1s;
+  color: inherit;
+  border-color: inherit;
+  outline: none;
+  transition: filter 1s;
+}
+
+/*# sourceMappingURL=styles.css.map */
