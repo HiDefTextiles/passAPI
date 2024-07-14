@@ -10,8 +10,9 @@
 </head>
 
 <body>
+	<div id="loading"></div>
 	<header>
-		<h1>HelgaDef passapí</h1>
+		<h1>HelgaDef PASSAP-API</h1>
 		<p class="WebSocketStatus">🔁</p>
 		<nav>
 			<menu>
@@ -34,7 +35,7 @@
 
 		<table class="taflann">
 			<caption>
-				<h2>Núverandi munstur</h2>
+				<h2>Núverandi munztur</h2>
 				<caption>
 				<thead id="bed">
 
@@ -45,7 +46,7 @@
 
 		</table>
 		<form id="integerForm" action="/api/nr" method="post" class="form">
-			<p>Lína númer: <strong id="number"></strong></p>
+			<p>Línu númer: <strong id="number">0/0</strong> Búnar</p>
 			<div class="field">
 				<label for="integerInput">Númer línu</label>
 				<input type="number" min="0" step="1" max="1" id="integerInput" name="integerInput" required
@@ -61,6 +62,8 @@
 		</form>
 
 		<h2>Leiðbeiningar</h2>
+		<p><strong>Feitletraða línan er stillt í arduino.</strong></p>
+		<p><u>Valda línan er línan sem er búið að stilla.</u></p>
 		<ul>
 			<li>
 				Sléttartölur

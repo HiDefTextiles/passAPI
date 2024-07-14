@@ -54,17 +54,18 @@ function highlightRow(rowIndex) {
 
 	const rows = joke.children;
 
-	rows[rowIndex].classList.add('current');
+	// rows[rowIndex].classList.add('current');
 	// console.log(sin++);
 
 	// Remove existing highlights
 	for (let i = 0; i < rows.length; i++) {
 		rows[i].classList.remove('highlight');
-		if (i > rowIndex - 4 && i < rowIndex + 4) {
+		if (i > rowIndex - 5 && i < rowIndex + 3) {
 			rows[i].classList.add('highlight');
+			rows[i].classList.add(`gridrow${rowIndex - i - 1 < 0 ? 5 + i - rowIndex : i - rowIndex + 5}`)
 			rows[i].classList.remove('not_it');
 		} else {
-			!rows[i].classList.contains('not_it') && rows[i].add('not_it')
+			!rows[i].classList.contains('not_it') && rows[i].classList.add('not_it')
 		}
 		// rows[i].classList.add('lowlight');
 	}
@@ -76,16 +77,17 @@ function highlightRow(rowIndex) {
 	// for (let i = Math.max(rowIndex - 3, 0); i <= Math.min(rowIndex + 3, rows.length - 1); i++) {
 	// 	rows[i].classList.add('highlight');
 	// }
+	return true
 }
 
 
 
 document.addEventListener('DOMContentLoaded', () => {
+	const bs = document.getElementById('loading')
 	document.getElementById('integerForm').addEventListener('submit', function (event) {
 		event.preventDefault(); // Prevent the default form submission
-
+		bs?.classList.add('loading')
 		const integerValue = document.getElementById('integerInput').value;
-
 		// Make a POST request to the same server
 		fetch('/api/nr', {
 			method: 'POST',
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ nr: parseInt(integerValue, 10) })
-		})
+		}).then(stak => stak.status === 200 && highlightRow(parseInt(integerValue, 10)) && bs?.classList.remove('loading'));
 	});
 	document.getElementById('patternDeleteForm').addEventListener('submit', (event) => {
 		event.preventDefault();

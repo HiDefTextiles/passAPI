@@ -41,8 +41,7 @@ export const postnr = [
 	async (req, res) => {
 		// { nr } = req.body;
 		const new_nr = Number.parseInt(req.body.nr)
-		nr = new_nr < nr ? new_nr : nr;
-		sendit();
+		nr = new_nr !== nr ? new_nr : nr;
 		const { start, pattern, msg } = postrequests[0];
 		handler(start, pattern, msg);
 		res.json('línu breytt')
