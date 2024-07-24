@@ -59,16 +59,24 @@ function highlightRow(rowIndex) {
 
 	// Remove existing highlights
 	for (let i = 0; i < rows.length; i++) {
+		// Remove any existing grid row classes
+		for (let j = 1; j <= 7; j++) { // Assuming gridrow classes range from 0 to 10
+			rows[i].classList.remove(`gridrow${j}`);
+		}
+
 		rows[i].classList.remove('highlight');
+
 		if (i > rowIndex - 5 && i < rowIndex + 3) {
 			rows[i].classList.add('highlight');
-			rows[i].classList.add(`gridrow${rowIndex - i - 1 < 0 ? 5 + i - rowIndex : i - rowIndex + 5}`)
+			rows[i].classList.add(`gridrow${rowIndex - i - 1 < 0 ? 5 + i - rowIndex : i - rowIndex + 5}`);
 			rows[i].classList.remove('not_it');
 		} else {
-			!rows[i].classList.contains('not_it') && rows[i].classList.add('not_it')
+			if (!rows[i].classList.contains('not_it')) {
+				rows[i].classList.add('not_it');
+			}
 		}
-		// rows[i].classList.add('lowlight');
 	}
+
 	if (num) {
 		num.innerHTML = `${!rowIndex ? 0 : rowIndex - 1}/${rows.length}`
 	}
@@ -120,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (value) value.innerText = nyttgildi;
 			const nails = document.body.querySelector('#bed');
 			const sequence = document.body.querySelector('#munstur');
-			if (obj.postrequests.length) {
+			if (obj.postrequests.length && nyttgildi !== gamlagildi) {
 				const pattern = obj.postrequests[0].pattern;
 				const linur = pattern.length
 				const start = Number(obj.postrequests[0].start);
@@ -165,6 +173,13 @@ document.addEventListener('DOMContentLoaded', () => {
 				highlightRow(obj.nr);
 				// const num = document.getElementById('number')
 			}
+		} else if (obj && obj.nr) {
+			const mark = document.body.querySelector('.mark');
+			mark.classList.remove('mark')
+			const newmark = document.getElementById(`${obj.nr ? obj.nr - 1 : 0}l`);
+			newmark && newmark.classList.add('mark')
+
+			highlightRow(obj.nr);
 		}
 	};
 

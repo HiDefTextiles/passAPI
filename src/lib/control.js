@@ -10,13 +10,28 @@ import WebSocket from "ws";
 export var nr = 0;
 let old_nr = -1;
 export const postrequests = [];
-const sendit = () => wss.clients.forEach((client) => {
-	if (client.readyState === WebSocket.OPEN) {
-		client.send(JSON.stringify(
-			{ nr, postrequests }
-		));
+let previousPostrequest = null; // Cache for the previous postrequest
+const sendit = () => {
+	const currentPostrequest = postrequests[0];
+	const payload = { nr };
+
+	if (previousPostrequest && JSON.stringify(currentPostrequest) === JSON.stringify(previousPostrequest)) {
+		// Only send nr if postrequests[0] is the same as the previous one
+		payload.nr = nr;
+	} else {
+		// Send both nr and postrequests
+		payload.nr = nr;
+		payload.postrequests = postrequests;
+		previousPostrequest = currentPostrequest; // Update the cache
 	}
-});
+
+	wss.clients.forEach((client) => {
+		if (client.readyState === WebSocket.OPEN) {
+			client.send(JSON.stringify(payload));
+		}
+	});
+};
+
 const handler = (start, pattern, msg) => {
 	sendit();
 	const munstur = pattern[nr].replaceAll(',', '').split('');
