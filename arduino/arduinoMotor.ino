@@ -17,6 +17,7 @@ volatile int counter = 0;
 int input = -10;
 int array[179] = {0};
 int arraysize = 179;
+volatile uint8_t color = 0;
 
 void setup()
 {
@@ -56,10 +57,17 @@ void interrupt_CSENSE()
 			{
 				digitalWrite(PIN_NEEDLE_RTL, array[index + 10]);
 			}
-			else if (index < -11 && direction != 1)
+			else if (index < -20 && direction != 1)
 			{
+				buttonPress(goStopPin);
+				buttonPress(switchPin);
 				Serial.println('L');
 				direction = 1;
+				while (serial.available() = 0)
+				{
+				}
+				serialStream();
+				buttonPress(goStopPin);
 			}
 			break;
 
@@ -72,19 +80,23 @@ void interrupt_CSENSE()
 			{
 				digitalWrite(PIN_NEEDLE_LTR, array[index]);
 			}
-			else if (index > arraysize && direction != 0)
-			{
-				Serial.println('R');
-				direction = 0;
-			}
 			counter++;
 			break;
-
 		case 30: // 0 0
-			if (index > arraysize && direction != 0)
+			if (index > arraysize + 10 && direction != 0)
 			{
 				Serial.println('R');
 				direction = 0;
+				if (color == 0)
+				{
+					buttonPress(goStopPin);
+					buttonPress(switchPin);
+					while (serial.available() = 0)
+					{
+					}
+					serialStream();
+					buttonPress(goStopPin);
+				}
 			}
 			break;
 
@@ -101,14 +113,15 @@ void serialStream()
 		String inputString = Serial.readStringUntil('!');
 		int lengd = inputString.length();
 
-		if (lengd > 2)
+		if (lengd > 3)
 		{
-			arraysize = lengd - 3;
+			arraysize = lengd - 4;
 			int tala = (inputString.charAt(1) - '0') * 10 + (inputString.charAt(2) - '0');
 			input = (inputString.charAt(0) == '+') ? tala : -tala;
-			for (int i = 3; i < lengd; i++)
+			color = inputString.charAt(3) - '0';
+			for (int i = 4; i < lengd; i++)
 			{
-				array[i - 3] = inputString.charAt(i) - '0';
+				array[i - 4] = inputString.charAt(i) - '0';
 			}
 		}
 	}
@@ -120,4 +133,12 @@ void buttonPress(int pin) // ytum a takka
 	digitalWrite(pin, LOW);	 // press
 	delay(20);				 // wait
 	digitalWrite(pin, HIGH); // reser
+}
+
+void initScale()
+{
+	buttonPress(switchPin);
+	buttonPress(endPin);
+	buttonPress(goStopPin);
+	counter = 0;
 }
