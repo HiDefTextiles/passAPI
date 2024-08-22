@@ -5,6 +5,7 @@ import { validationCheck } from "./validation.js";
 import { constants } from "buffer";
 import { wss } from "../app.js";
 import WebSocket from "ws";
+import { getNextPattern, getNextRow } from "src/db/db.js";
 // import { writeDataToArduino, parser } from './serial.js'
 
 export var nr = 0;
@@ -44,6 +45,18 @@ const handler = (start, pattern, msg) => {
 	// console.log(`litur=${litur} ${(msg && msg[nr]) ? ', msg: ' + msg[nr] : ''}`);
 	nr += 1;
 }
+const get = (start, id, length) => {
+	let i = 0;
+	let matrix = []
+	while (i < length) {
+		const row = getNextRow(id, i++);
+		if (row && row?.value) {
+			matrix.push(row.value);
+		}
+	}
+	postrequests.push({ start, pattern: matrix, msg: '' });
+}
+
 export const postnr = [
 	body("nr")
 		.trim()
@@ -117,6 +130,29 @@ export const deletePattern = [
 		res.json('búið að eyða munstri');
 	}
 ]
+
+export const dbPattern = [
+	body("start")
+		.trim()
+		.escape()
+		.notEmpty()
+		.withMessage('Missing start value. Vantar start gildi')
+		.isInt({ min: -90, max: 89 })
+		.withMessage(`start has to be a integer between -90 and 89.
+		start þarf a vera heiltala á bilinu -90 til 89`),
+	validationCheck,
+	async (req, res) => {
+		const dbp = await getNextPattern();
+		if (!dbp) {
+			res.json('Enginn munstur í bið í db.')
+		} else {
+			const { start } = req.body
+
+		}
+	}
+
+]
+
 
 parser.on('data', data => {
 	console.log(data, nr);

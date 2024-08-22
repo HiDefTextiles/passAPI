@@ -45,21 +45,31 @@
 			</tbody>
 
 		</table>
-		<form id="integerForm" action="/api/nr" method="post" class="form">
-			<p>Línu númer: <strong id="number">0/0</strong> Búnar</p>
-			<div class="field">
-				<label for="integerInput">Númer línu</label>
-				<input type="number" min="0" step="1" max="1" id="integerInput" name="integerInput" required
+		<div>
+			<form id="integerForm" action="/api/nr" method="post" class="form">
+				<p>Línu númer: <strong id="number">0/0</strong> Búnar</p>
+				<div class="field">
+					<label for="integerInput">Númer línu</label>
+					<input type="number" min="0" step="1" max="1" id="integerInput" name="integerInput" required
+						placeholder="">
+					<button type="submit" class="buttonChange button">Breyta</button>
+				</div>
+			</form>
+			<form id="patternDeleteForm" action="/api/pattern" method="delete" class="form">
+				<div class="field">
+					<p>Fjöldi munstra: <span id="server-value">Waiting for value...</span></p>
+					<button type="submit" class="buttonDelete button">Eyða munstri</button>
+				</div>
+			</form>
+		</div>
+		<div>
+			<form id="patternStreamForm" action="/api/stream" method="post" class="form">
+				<label for="integerInput">Start:Byrjunarnál</label>
+				<input type="number" min="-90" step="1" max="89" id="startByrjun" name="integerInput" required
 					placeholder="">
-				<button type="submit" class="buttonChange button">Breyta</button>
-			</div>
-		</form>
-		<form id="patternDeleteForm" action="/api/pattern" method="delete" class="form">
-			<div class="field">
-				<p>Fjöldi munstra: <span id="server-value">Waiting for value...</span></p>
-				<button type="submit" class="buttonDelete button">Eyða munstri</button>
-			</div>
-		</form>
+				<button type="submit" class="button">Sækja streymi ú gagnagrunni</button>
+			</form>
+		</div>
 
 		<h2>Leiðbeiningar</h2>
 		<p><strong>Feitletraða línan er stillt í arduino.</strong></p>
