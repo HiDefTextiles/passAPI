@@ -113,6 +113,20 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 		}
 	})
+	document.getElementById('patternStreamForm').addEventListener('submit', (event) => {
+		event.preventDefault();
+		bs?.classList.add('loading')
+		const integerValue = document.getElementById('startByrjun').value;
+
+		fetch('/api/stream', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ start: parseInt('startByrjun', 10) })
+		}).then(done => bs?.classList.remove('loading') && window.alert(done.json()))
+
+	})
 	const socket = new WebSocket('ws://localhost:3001');
 	const WebSocketStatus = document.body.querySelector('.WebSocketStatus')
 

@@ -1,14 +1,14 @@
 import { body } from "express-validator";
-import { SerialPort } from "serialport";
 import { parser, writeDataToArduino } from "./serial.js";
 import { validationCheck } from "./validation.js";
-import { constants } from "buffer";
+import { separateColors } from "./saebba.js";
 import { wss } from "../app.js";
 import WebSocket from "ws";
+import { getNextPattern } from "../db/db.js";
 // import { writeDataToArduino, parser } from './serial.js'
 
 export var nr = 0;
-let old_nr = -1;
+let stream = { status: false, start: -10 };
 export const postrequests = [];
 let previousPostrequest = null; // Cache for the previous postrequest
 const sendit = () => {
@@ -38,12 +38,32 @@ const handler = (start, pattern, msg) => {
 	const litur = Math.max(...munstur);
 	// ((status === "R" && nr % 2 !== 0) || (nr > 1 && status === "L" && nr % 2 === 0))
 	// 	&& nr < pattern.length && 
-	const sp = (Math.abs(start) > 9 ? start : `0${start}`);
+	const sp = (Math.abs(start) > 9 ? start : `0${Math.abs(start)}`);
 	const stilling = munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')
-	writeDataToArduino(`${sp < 0 ? sp : `+${sp}`}${stilling}`);
+	writeDataToArduino(`${start < 0 ? sp : `+${sp}`}${stilling}`);
 	// console.log(`litur=${litur} ${(msg && msg[nr]) ? ', msg: ' + msg[nr] : ''}`);
 	nr += 1;
 }
+const get = async (start) => {
+	writeDataToArduino(`s`);
+	const { id, matrix } = await getNextPattern();
+	if (!matrix) {
+		return
+	}
+	const matrixFormatted = matrix.split(';').map(stak => stak.split()).map(stak => Number.parseInt(stak));
+	const matrixColors = separateColors(matrixFormatted);
+	postrequests.push({ start, matrixColors });
+	if (postrequests.length === 1) {
+		nr = 0;
+		handler(start, pattern)  // byrjar ferlið
+		// res.json("Munstur sett í vinnslu.");
+	} else {
+		// res.json(`Munstur sett í bið, þú ert númer ${postrequests.length} í röðinni ;)`);
+		sendit();
+	}
+	writeDataToArduino(`s`);
+}
+
 export const postnr = [
 	body("nr")
 		.trim()
@@ -83,7 +103,7 @@ export const postPattern = [
 		.custom(
 			pattern => pattern.every(
 				row => {
-					return typeof row === 'string' && row.replaceAll(',', '').split('').every(v => Number.isInteger(Number(v)) && v >= 0 && v <= 4)
+					return typeof row === 'string' && row.replaceAll(',', '').split('').every(stak => Number.isInteger(Number(stak)) && stak >= 0 && stak <= 4)
 				}
 			)
 		)
@@ -118,6 +138,29 @@ export const deletePattern = [
 	}
 ]
 
+export const dbPattern = [
+	body("start")
+		.trim()
+		.escape()
+		.notEmpty()
+		.withMessage('Missing start value. Vantar start gildi')
+		.isInt({ min: -90, max: 89 })
+		.withMessage(`start has to be a integer between -90 and 89.
+		start þarf a vera heiltala á bilinu -90 til 89`),
+	validationCheck,
+	async (req, res) => {
+		const dbp = await getNextPattern();
+		if (!dbp) {
+			res.json('Enginn munstur í bið í db.')
+		} else {
+			const { start } = req.body
+
+		}
+	}
+
+]
+
+
 parser.on('data', data => {
 	console.log(data, nr);
 	if (postrequests.length) {
@@ -137,7 +180,10 @@ parser.on('data', data => {
 				sendit()
 			}
 		}
-	} else {
+	} else if (stream && data == 'L') {
+
+	}
+	else {
 		sendit();
 	};
 }
