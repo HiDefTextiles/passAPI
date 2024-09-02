@@ -10,14 +10,8 @@ CREATE TABLE Pattern (
     status BOOLEAN NOT NULL DEFAULT FALSE,
 	vel_id INTEGER,
 	name VARCHAR(255) NOT NULL,
-	length INTEGER
-);
-
-CREATE TABLE PatternMatrix (
-	pattern_id INTEGER,
-    index INTEGER,
-    value TEXT,
-    FOREIGN KEY (pattern_id) REFERENCES Pattern(id)
+	length INTEGER,
+	matrix TEXT
 );
 
 ALTER TABLE Pattern

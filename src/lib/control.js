@@ -1,15 +1,14 @@
 import { body } from "express-validator";
-import { SerialPort } from "serialport";
 import { parser, writeDataToArduino } from "./serial.js";
 import { validationCheck } from "./validation.js";
-import { constants } from "buffer";
+import { separateColors } from "./saebba.js";
 import { wss } from "../app.js";
 import WebSocket from "ws";
-import { getNextPattern, getNextRow } from "src/db/db.js";
+import { getNextPattern } from "../db/db.js";
 // import { writeDataToArduino, parser } from './serial.js'
 
 export var nr = 0;
-let old_nr = -1;
+let stream = { status: false, start: -10 };
 export const postrequests = [];
 let previousPostrequest = null; // Cache for the previous postrequest
 const sendit = () => {
@@ -39,22 +38,30 @@ const handler = (start, pattern, msg) => {
 	const litur = Math.max(...munstur);
 	// ((status === "R" && nr % 2 !== 0) || (nr > 1 && status === "L" && nr % 2 === 0))
 	// 	&& nr < pattern.length && 
-	const sp = (Math.abs(start) > 9 ? start : `0${start}`);
+	const sp = (Math.abs(start) > 9 ? start : `0${Math.abs(start)}`);
 	const stilling = munstur.map(stak => Number(stak == 0)).join().replaceAll(',', '')
-	writeDataToArduino(`${sp < 0 ? sp : `+${sp}`}${stilling}`);
+	writeDataToArduino(`${start < 0 ? sp : `+${sp}`}${stilling}`);
 	// console.log(`litur=${litur} ${(msg && msg[nr]) ? ', msg: ' + msg[nr] : ''}`);
 	nr += 1;
 }
-const get = (start, id, length) => {
-	let i = 0;
-	let matrix = []
-	while (i < length) {
-		const row = getNextRow(id, i++);
-		if (row && row?.value) {
-			matrix.push(row.value);
-		}
+const get = async (start) => {
+	writeDataToArduino(`s`);
+	const { id, matrix } = await getNextPattern();
+	if (!matrix) {
+		return
 	}
-	postrequests.push({ start, pattern: matrix, msg: '' });
+	const matrixFormatted = matrix.split(';').map(stak => stak.split()).map(stak => Number.parseInt(stak));
+	const matrixColors = separateColors(matrixFormatted);
+	postrequests.push({ start, matrixColors });
+	if (postrequests.length === 1) {
+		nr = 0;
+		handler(start, pattern)  // byrjar ferlið
+		// res.json("Munstur sett í vinnslu.");
+	} else {
+		// res.json(`Munstur sett í bið, þú ert númer ${postrequests.length} í röðinni ;)`);
+		sendit();
+	}
+	writeDataToArduino(`s`);
 }
 
 export const postnr = [
@@ -96,7 +103,7 @@ export const postPattern = [
 		.custom(
 			pattern => pattern.every(
 				row => {
-					return typeof row === 'string' && row.replaceAll(',', '').split('').every(v => Number.isInteger(Number(v)) && v >= 0 && v <= 4)
+					return typeof row === 'string' && row.replaceAll(',', '').split('').every(stak => Number.isInteger(Number(stak)) && stak >= 0 && stak <= 4)
 				}
 			)
 		)
@@ -173,7 +180,10 @@ parser.on('data', data => {
 				sendit()
 			}
 		}
-	} else {
+	} else if (stream && data == 'L') {
+
+	}
+	else {
 		sendit();
 	};
 }

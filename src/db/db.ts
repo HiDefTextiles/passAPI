@@ -60,15 +60,9 @@ export async function dropSchema(dropFile = DROP_SCHEMA_FILE) {
 	return query(data.toString('utf-8'));
 }
 
-export async function getNextPattern(): Promise<{ id: number, image_URL: string | null, pattern_matrix: Array<string>, status: boolean, vel_id: number, username: string }> {
+export async function getNextPattern(): Promise<{ id: number, image_URL: string | null, matrix: string, status: boolean, vel_id: number, username: string }> {
 	const q = `SELECT * FROM Pattern WHERE status = FALSE AND vel_id = ${process.env.vel_id} ORDER BY id ASC LIMIT 1;`
 	const result = await query(q)
-	return result && result.rows[0] || null;
-}
-
-export async function getNextRow(id: number, index: number) {
-	const q = `SELECT * FROM Pattern WHERE pattern_id = $1 AND index = $2;`
-	const result = await query(q, [id, index])
 	return result && result.rows[0] || null;
 }
 
