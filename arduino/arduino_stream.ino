@@ -114,7 +114,7 @@ void serialStream()
 		}
 		else if (lengd == 1)
 		{
-			if (inputString == = 's')
+			if (inputString.charAt(0) == 's')
 			{
 				buttonPress(goStopPin);
 			}

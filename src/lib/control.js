@@ -8,7 +8,7 @@ import { getNextPattern } from "../db/db.js";
 // import { writeDataToArduino, parser } from './serial.js'
 
 export var nr = 0;
-let stream = { status: false, start: -10 };
+let stream = { status: false, start: -20 };
 export const postrequests = [];
 let previousPostrequest = null; // Cache for the previous postrequest
 const sendit = () => {
@@ -34,7 +34,7 @@ const sendit = () => {
 
 const handler = (start, pattern, msg) => {
 	sendit();
-	const munstur = pattern[nr].replaceAll(',', '').split('');
+	const munstur = String(pattern[nr]).replaceAll(',', '').split('');
 	const litur = Math.max(...munstur);
 	// ((status === "R" && nr % 2 !== 0) || (nr > 1 && status === "L" && nr % 2 === 0))
 	// 	&& nr < pattern.length && 
@@ -43,16 +43,20 @@ const handler = (start, pattern, msg) => {
 	writeDataToArduino(`${start < 0 ? sp : `+${sp}`}${stilling}`);
 	// console.log(`litur=${litur} ${(msg && msg[nr]) ? ', msg: ' + msg[nr] : ''}`);
 	nr += 1;
-}
+};
+
 const get = async (start) => {
-	writeDataToArduino(`s`);
-	const { id, matrix } = await getNextPattern();
-	if (!matrix) {
+	// console.log('test');
+	writeDataToArduino('s!');
+	const response = await getNextPattern();
+	if (!response) {
 		return
 	}
-	const matrixFormatted = matrix.split(';').map(stak => stak.split()).map(stak => Number.parseInt(stak));
-	const matrixColors = separateColors(matrixFormatted);
-	postrequests.push({ start, matrixColors });
+	const matrixFormatted = response.matrix.split(';').map(stak => stak.split('').map(stak => Number.parseInt(stak)));
+	// console.log(matrixFormatted, 't')
+	const pattern = separateColors(matrixFormatted);
+	// console.log(pattern[0], 't')
+	postrequests.push({ start, pattern });
 	if (postrequests.length === 1) {
 		nr = 0;
 		handler(start, pattern)  // byrjar ferlið
@@ -61,7 +65,8 @@ const get = async (start) => {
 		// res.json(`Munstur sett í bið, þú ert númer ${postrequests.length} í röðinni ;)`);
 		sendit();
 	}
-	writeDataToArduino(`s`);
+	console.log('yes')
+	writeDataToArduino(`s!`);
 }
 
 export const postnr = [
@@ -149,23 +154,22 @@ export const dbPattern = [
 		start þarf a vera heiltala á bilinu -90 til 89`),
 	validationCheck,
 	async (req, res) => {
-		const dbp = await getNextPattern();
 		if (!dbp) {
 			res.json('Enginn munstur í bið í db.')
 		} else {
 			const { start } = req.body
-
+			stream.start = Number.isNaN(start) ? Number.parseInt(start) : start;
+			stream.status = TRUE;
+			console.log(stream);
 		}
 	}
-
 ]
-
 
 parser.on('data', data => {
 	console.log(data, nr);
 	if (postrequests.length) {
-		let i = 1;
 		const { start, pattern, msg } = postrequests[0];
+		// console.log(pattern);
 		const linur = pattern.length;
 		((data === "R" && nr % 2 !== 0) || (nr > 1 && data === "L" && nr % 2 === 0))
 			&& nr < linur && handler(start, pattern, msg);
@@ -180,8 +184,8 @@ parser.on('data', data => {
 				sendit()
 			}
 		}
-	} else if (stream && data == 'L') {
-
+	} else if (stream.status && data == 'L') {
+		get(stream.start)
 	}
 	else {
 		sendit();

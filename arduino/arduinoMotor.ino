@@ -3,6 +3,7 @@
 #define PIN_CREF 4
 #define PIN_NEEDLE_RTL 5
 #define PIN_NEEDLE_LTR 6
+// - buttonPins
 #define switchPin 10
 #define colPin 11
 #define goStopPin 12
@@ -16,8 +17,7 @@ volatile uint8_t state = 0;
 volatile int counter = 0;
 int input = -10;
 int array[179] = {0};
-int arraysize = 179;
-volatile uint8_t color = 0;
+int arraysize = 10;
 
 void setup()
 {
@@ -25,6 +25,9 @@ void setup()
 
 	pinMode(PIN_CSENSE, INPUT_PULLUP);
 	pinMode(PIN_CREF, INPUT_PULLUP);
+
+	pinMode(goStopPin, OUTPUT);
+	digitalWrite(goStopPin, HIGH);
 	attachInterrupt(digitalPinToInterrupt(PIN_CSENSE), interrupt_CSENSE, CHANGE);
 
 	pinMode(PIN_NEEDLE_LTR, OUTPUT);
@@ -57,17 +60,10 @@ void interrupt_CSENSE()
 			{
 				digitalWrite(PIN_NEEDLE_RTL, array[index + 10]);
 			}
-			else if (index < -20 && direction != 1)
+			else if (index < -11 && direction != 1)
 			{
-				buttonPress(goStopPin);
-				buttonPress(switchPin);
 				Serial.println('L');
 				direction = 1;
-				while (serial.available() = 0)
-				{
-				}
-				serialStream();
-				buttonPress(goStopPin);
 			}
 			break;
 
@@ -80,23 +76,19 @@ void interrupt_CSENSE()
 			{
 				digitalWrite(PIN_NEEDLE_LTR, array[index]);
 			}
-			counter++;
-			break;
-		case 30: // 0 0
-			if (index > arraysize + 10 && direction != 0)
+			else if (index > arraysize && direction != 0)
 			{
 				Serial.println('R');
 				direction = 0;
-				if (color == 0)
-				{
-					buttonPress(goStopPin);
-					buttonPress(switchPin);
-					while (serial.available() = 0)
-					{
-					}
-					serialStream();
-					buttonPress(goStopPin);
-				}
+			}
+			counter++;
+			break;
+
+		case 30: // 0 0
+			if (index > arraysize && direction != 0)
+			{
+				Serial.println('R');
+				direction = 0;
 			}
 			break;
 
@@ -112,33 +104,31 @@ void serialStream()
 	{
 		String inputString = Serial.readStringUntil('!');
 		int lengd = inputString.length();
-
-		if (lengd > 3)
+		if (lengd > 3) // allir strengir minni en 3 opnir fyrir sér skipanir
 		{
-			arraysize = lengd - 4;
+			arraysize = lengd - 3;
 			int tala = (inputString.charAt(1) - '0') * 10 + (inputString.charAt(2) - '0');
 			input = (inputString.charAt(0) == '+') ? tala : -tala;
-			color = inputString.charAt(3) - '0';
-			for (int i = 4; i < lengd; i++)
+			for (int i = 3; i < lengd; i++)
 			{
-				array[i - 4] = inputString.charAt(i) - '0';
+				array[i - 3] = inputString.charAt(i) - '0';
+			}
+		}
+		else
+		{
+			if (inputString.charAt(0) == 's')
+			{
+				buttonPress(goStopPin);
 			}
 		}
 	}
 	return;
 }
 
-void buttonPress(int pin) // ytum a takka
+void buttonPress(int pin)
 {
-	digitalWrite(pin, LOW);	 // press
-	delay(20);				 // wait
-	digitalWrite(pin, HIGH); // reser
-}
+	digitalWrite(pin, LOW);
+	delay(40);
 
-void initScale()
-{
-	buttonPress(switchPin);
-	buttonPress(endPin);
-	buttonPress(goStopPin);
-	counter = 0;
+	digitalWrite(pin, HIGH);
 }
