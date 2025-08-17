@@ -4,7 +4,7 @@ import { APIrouter } from './routes/api.js';
 import os from 'os'
 import { previewRouter } from './routes/preview.js';
 import http from 'http';
-import { WebSocketServer } from "ws";
+import { WebSocketServer, WebSocket } from "ws";
 import { nr, postrequests } from './lib/control.js';
 import { stringify } from 'querystring';
 import exp from 'constants';
