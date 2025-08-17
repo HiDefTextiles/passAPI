@@ -29,10 +29,10 @@ function el(name, attributes = {}, ...children) {
 /**
  * range of numbers
  * https://www.freecodecamp.org/news/javascript-range-create-an-array-of-numbers-with-the-from-method/
- * @param {*} start 
- * @param {*} stop 
- * @param {*} step 
- * @returns 
+ * @param {*} start
+ * @param {*} stop
+ * @param {*} step
+ * @returns
  */
 const arrayRange =
 	(start, stop, step) =>
@@ -103,9 +103,9 @@ const einnTilBakaElement = (main, parentPath) => {
 
 
 /**
- * 
- * @param {HTMLElement | string} main 
- * @returns 
+ *
+ * @param {HTMLElement | string} main
+ * @returns
  */
 const infoElement = (main) => {
 	if (socket) {
@@ -754,9 +754,9 @@ async function setupPattern() {
 
 
 /**
- * 
- * @param {string} pathDir path to search 
- * @returns 
+ *
+ * @param {string} pathDir path to search
+ * @returns
  */
 async function getFiles(pathDir) {
 	let extra = '\\'.includes(pathDir[-1])
@@ -921,7 +921,7 @@ let socket;
 
 const connect = () => {
 	const WebSocketStatus = document.body.querySelector('.WebSocketStatus')
-	socket = new WebSocket('ws://localhost:3001');
+	socket = new WebSocket(`ws://${window.location.hostname}:3001`);
 	let errorBoolean = false;
 
 	socket.onmessage = function (event) {

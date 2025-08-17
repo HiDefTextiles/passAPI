@@ -1,13 +1,11 @@
 import express, { Request, Response } from 'express';
 import { cors } from './lib/cors.js';
 import { APIrouter } from './routes/api.js';
-import os from 'os'
+// import os from 'os'
 import { previewRouter } from './routes/preview.js';
 import http from 'http';
 import { WebSocketServer, WebSocket } from "ws";
 import { nr, postrequests } from './lib/control.js';
-import { stringify } from 'querystring';
-import exp from 'constants';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { portSerial } from './lib/serial.js';
@@ -80,6 +78,10 @@ app.listen(port, () => {
 	// 		|| Number.parseFloat(networkInfo.splice(-1)[0].address) && networkInfo.splice(-1)[0].address
 	// 	)
 	// 	: 'port'}:${port}`);
+});
+process.on('unhandledRejection', (reason, promise) => {
+	console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+	// The 'reason' object will often have the stack trace you need
 });
 
 const server = http.createServer(app);

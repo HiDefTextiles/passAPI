@@ -193,5 +193,7 @@ APIrouter.post('/keyboard/hide', (req, res) => {
 });
 
 APIrouter.get('/currentPattern', (req, res) => {
-	res.json({ current: postrequests[0] })
+	if (postrequests[0]) { res.json({ current: postrequests[0].pattern }) }
+	else { res.status(400).json({ msg: 'ekkert munstur', current: null }) }
+
 })
