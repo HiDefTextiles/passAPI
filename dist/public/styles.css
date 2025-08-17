@@ -1,0 +1,672 @@
+@charset "UTF-8";
+
+/* Reset og border-box á allt */
+* {
+	margin: 0;
+	padding: 0;
+	color: #1d481d;
+}
+
+html {
+	box-sizing: border-box;
+	background-color: #f2f2ef;
+	max-width: 480px;
+	max-height: 320px;
+	/* overflow: hidden; */
+}
+
+.popup-cover {
+	z-index: 99;
+	grid-column: 1/6;
+	grid-row: 1/5;
+	inset: 0;
+	position: fixed;
+}
+
+.popup {
+	color: #000;
+	filter: drop-shadow(0 0 80px #000);
+	grid-column: 1/6;
+	grid-row: 1/5;
+	inset: 0;
+	position: fixed;
+	/* width: 400px;
+	height: 260px; */
+	align-self: center;
+	justify-self: center;
+	z-index: 199;
+	background-color: #f2f2ef;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(3, 1fr);
+	gap: 20px;
+}
+
+.grid {
+	width: 480px;
+	height: 320px;
+	overflow: hidden;
+	/* width: 100%; */
+	/* height: 100%; */
+	display: grid;
+	grid-template-columns: repeat(3, 120px 60px);
+	grid-template-rows: repeat(4, 80px);
+	gap: 0;
+	text-align: center;
+	align-items: center;
+	justify-items: center;
+}
+
+.switch,
+.stop,
+.go {
+	width: 100%;
+	height: 100%;
+}
+
+.switch {
+	grid-column: 1;
+	grid-row: 1;
+}
+
+.info {
+	grid-column: 3;
+	grid-row: 1;
+}
+
+.outline {
+	outline: 1px solid black;
+	outline-offset: -1px;
+	border-radius: 1em;
+}
+
+.info,
+.pattern,
+.borderItem {
+	/* display: flex; */
+	/* Pulls the outline inward to look like a border */
+	border-radius: 1em;
+	text-align: center;
+	/* list-style: none; */
+	align-content: center;
+	outline: 1px solid black;
+	outline-offset: -1px;
+	border-radius: 1em;
+	/* flex: 1; */
+	width: 100%;
+	height: 100%;
+	/* display: flex; */
+}
+
+.info a,
+.pattern a {
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+	align-content: center;
+}
+
+a {
+	text-decoration: none;
+}
+
+.stop {
+	grid-column: 5;
+	grid-row: 1;
+}
+
+.pattern {
+	grid-column: 1;
+	grid-row: 4;
+}
+
+.go {
+	grid-column: 5;
+	grid-row: 4;
+}
+
+.counter {
+	grid-column: 2/6;
+	grid-row: 4;
+	display: grid;
+	grid-template-columns: 0.75fr 0.75fr 1fr 1fr;
+	grid-row: 1fr;
+	/* width: 100%; */
+	height: 100%;
+}
+
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+.sr-only:not(:focus):not(:active) {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+.not_it {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+.not_it .highlight {
+	width: fit-content;
+	height: fit-content;
+}
+
+.not_it .highlight th,
+.not_it .highlight td {
+	width: fit-content;
+}
+
+.taflann {
+	grid-row: 2 / 4 !important;
+	grid-column: 1 / 6 !important;
+	align-self: center;
+	width: 100%;
+	height: 100%;
+	overflow-y: hidden;
+	/* <-- Add this line to hide the vertical overflow */
+}
+
+.taflann thead tr th,
+.taflann thead tr td,
+.taflann tbody tr th,
+.taflann tbody tr td {
+	/* min-width: 1em; */
+	overflow-x: auto;
+}
+
+tr {
+	display: grid;
+	grid-template-columns: 2em repeat(179, 2px) 1fr;
+	gap: 0;
+	/* max-width: ; */
+}
+
+td {
+	align-self: center;
+	justify-self: center;
+	/* max-width: 2px; */
+	/* display: block; */
+	width: 2px;
+	overflow: hidden;
+	display: flex;
+	/* width: fit-content; */
+}
+
+th {
+	/* width: 0; */
+}
+
+.thead {
+	width: fit-content;
+}
+
+.mark {
+	/* border: 1px solid black; */
+	/* display: grid; */
+	/* grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); */
+	/* width: 100%; */
+	/* border-radius: 0.5em; */
+	/* border-radius-left: 0; */
+	/* border-left: 0; */
+	/* border-right: 0; */
+	/* background-color: black; */
+	outline: 1px solid black;
+	outline-offset: -1px;
+	/* Pulls the outline inward to look like a border */
+
+	border-radius: 0.5em;
+}
+
+button,
+input {
+	padding: 0.5em 1em 0.75em;
+	border: black solid 1px;
+	border-radius: 16px;
+	cursor: pointer;
+	/* width: 2em; */
+}
+
+button {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	align-items: center;
+	justify-items: center;
+}
+
+button:active {
+	filter: drop-shadow(0px 0px 0px black) !important;
+}
+
+.buttonStopp {
+	background: linear-gradient(to bottom right, white, rgb(255, 105, 97));
+}
+
+.buttonChange {
+	background: linear-gradient(to bottom right, white, rgb(253, 253, 150), yellow);
+}
+
+.buttonGo {
+	background: linear-gradient(to bottom right, white, rgb(105, 255, 97));
+}
+
+.nalaBreytir {
+	grid-row: 3;
+	/* grid-row-start: 3; */
+	/* grid-row: 3; */
+	grid-column: 1/6;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 2em 1fr;
+}
+
+.nalaBreytir h2 {
+	width: fit-content;
+	height: fit-content;
+}
+
+.nalaBreytir .form {
+	grid-column: 1 / 3;
+	align-self: center;
+}
+
+form {
+	width: 100%;
+	height: 100%;
+}
+
+form .buttonStopp,
+form .buttonChange,
+form .buttonGo {
+	font-size: 24px;
+	font-weight: 800;
+	/* color: #000; */
+
+}
+
+.form {
+	font-size: 1.25rem;
+	font-family: inherit;
+	width: fit-content;
+	/* margin: 1em auto; */
+	width: 100%;
+	transition: filter 1s;
+}
+
+.form .field {
+	font-family: inherit;
+	/* margin: 1em 0 0; */
+	display: flex;
+	/* flex-wrap: wrap; */
+	flex-direction: row;
+	/* gap: 1em; */
+	width: fit-content;
+	/* gap: 30px; */
+	justify-content: space-between;
+	width: 100%;
+}
+
+.counter div {
+	display: grid;
+	grid-template-columns: 1fr 1fr 2fr;
+	grid-template-rows: 1fr;
+	align-items: center;
+}
+
+.uppDown {
+	width: fit-content;
+	height: fit-content;
+	width: 100%;
+	grid-row: 1;
+	/* font-size: 2EM; */
+	/* padding: 0.5em; */
+}
+
+.patternMenu {
+	grid-row: 1 / 3;
+	grid-column: 1 / 6;
+}
+
+/* .start {
+	grid-column: 1;
+}
+
+.end {
+	grid-column: 2;
+
+} */
+
+/* .form .field:has(textarea:not(:placeholder-shown)) label,
+.form .field:has(textarea:focus) label,
+.form .field:has(input:not(:placeholder-shown)) label,
+.form .field:has(input:focus) label {
+	transform: translate(0, -1.25em);
+	padding: 0 0 0 0;
+	pointer-events: none;
+}
+
+.form .field input:focus+label,
+.form .field input:not(:placeholder-shown)+label {
+	transform: translate(0, -1.25em);
+	padding: 0 0 0 0;
+	pointer-events: none;
+}
+
+.form .field label {
+	font-family: inherit;
+	font-weight: 100;
+	transition: transform 0.33s ease-out, padding 1s ease;
+	position: absolute;
+	padding: 0.5em 0 0 1em;
+	pointer-events: none;
+	background: transparent;
+} */
+
+
+.form .field textarea,
+.form .field input {
+	pointer-events: auto;
+	font-size: 1.25rem;
+	font-family: inherit;
+	transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+	box-shadow: 0 0 0 black;
+	background-color: inherit;
+	border-radius: 1em;
+	/* padding: 0.5em 1em; */
+	/* width: 60px; */
+	/* width: fit-content; */
+}
+
+/* .form .field textarea:focus,
+.form .field input:focus {
+	outline: none;
+	border-color: white;
+	transition: border 0.25s;
+}
+
+.form .field textarea:focus label,
+.form .field input:focus label {
+	opacity: 100%;
+} */
+
+.form .button {
+	/* padding: 0.25em 1em 0.75em; */
+	font-size: 1.25rem;
+	/* height: 2em; */
+	font-weight: 400;
+	border-radius: 1em;
+	transition: scale 1s;
+}
+
+.form .button:hover,
+.form .button:focus-visible {
+	cursor: pointer;
+	font-weight: 400;
+	transition: scale 1s;
+	color: inherit;
+	border-color: inherit;
+	outline: none;
+	transition: filter 1s;
+}
+
+#munstur {
+	height: 100%;
+	max-height: 160px;
+	display: grid;
+	border: 1px #1d481d solid;
+	border-radius: 1em;
+	grid-template-rows: repeat(7, 1fr);
+}
+
+#munstur .gridrow1 {
+	grid-row: 1;
+	opacity: 25%;
+}
+
+#munstur .gridrow2 {
+	grid-row: 2;
+	opacity: 50%;
+}
+
+#munstur .gridrow3 {
+	grid-row: 3;
+	opacity: 75%;
+}
+
+#munstur .gridrow4 {
+	grid-row: 4;
+}
+
+#munstur .gridrow5 {
+	grid-row: 5;
+	font-weight: bold;
+}
+
+#munstur .gridrow6 {
+	grid-row: 6;
+	opacity: 75%;
+}
+
+#munstur .gridrow7 {
+	grid-row: 7;
+	opacity: 50%;
+}
+
+.activeNeedle {
+	/* width: 2px; */
+	height: 100%;
+	background-color: black;
+}
+
+.inactiveNeedle {
+	/* width: 2px; */
+	height: 100%;
+	opacity: 0%;
+}
+
+.file-list {
+	grid-column: 1 / 6;
+	grid-row: 2 / 5;
+	/* Corrected typo and set a more reasonable height */
+	max-height: 400px;
+	overflow-y: scroll;
+	/* padding-right: 2rem; */
+	/* Use overflow-y to scroll vertically */
+}
+
+/* Style the scrollbar for webkit browsers (Chrome, Safari, Edge) */
+.file-list::-webkit-scrollbar {
+	width: 60px;
+	/* Makes the scrollbar wider */
+}
+
+.file-list::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	/* Color of the track */
+}
+
+.file-list::-webkit-scrollbar-thumb {
+	background: #888;
+	/* Color of the handle */
+}
+
+.file-list::-webkit-scrollbar-thumb:hover {
+	background: #555;
+	/* Color of the handle on hover */
+}
+
+/* Style the up and down buttons */
+.file-list::-webkit-scrollbar-button {
+	background: #ccc;
+	display: block;
+	height: 80px;
+	/* Makes the buttons taller */
+}
+
+header {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	text-align: center;
+}
+
+.loading {
+	height: 100vh;
+	width: 100vw;
+	z-index: 10000;
+	position: fixed;
+	cursor: wait;
+	margin: -125px;
+	background: -webkit-linear-gradient(#f2f2ef, transparent);
+}
+
+.loading::before {
+	content: "Reyni að breyta";
+	animation-name: loading;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 3rem;
+	font-weight: 400;
+}
+
+@keyframes loading {
+	0% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.5;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+.invalidButton {
+	opacity: 25%;
+	/* pointer-events: none; */
+}
+
+.last3grid li {
+	display: grid;
+	grid-template-columns: 1fr 2fr 1fr;
+	grid-template-rows: 1.5rem;
+	align-items: center;
+	justify-items: center;
+}
+
+/* Hide the actual radio buttons */
+.radio-inputs {
+	display: none;
+}
+
+/* Container for the label "buttons" */
+.label-buttons {
+	width: 120px;
+	align-self: end;
+	display: grid;
+	grid-template-rows: repeat(4, 40px);
+	grid-template-columns: 120px;
+
+	/* display: flex; */
+	/* gap: 10px; */
+	/* flex-direction: column; */
+	/* Space between buttons */
+	/* margin-bottom: 20px; */
+}
+
+/* Hide the actual radio buttons */
+.form-container input[type="radio"] {
+	display: none;
+}
+
+/* Base style for the label buttons */
+.form-container label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	/* Add any other styles for your .button.borderItem here */
+}
+
+/* Style the label when its corresponding radio button is checked */
+.form-container input[type="radio"]:checked+label {
+	background-color: #000;
+	/* Or your preferred highlight color */
+	color: white;
+	border-color: #000;
+}
+
+/* This container will use Flexbox to align the input and the unit text */
+.input-with-unit {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: 80px;
+	/* Padding inside the container */
+	max-height: 80px;
+	text-align: center;
+	/* Ensures content fits neatly */
+}
+
+/* Make the actual input field transparent and borderless */
+.input-with-unit input {
+	width: 100%;
+	text-align: center;
+	/* Removes the glow on focus */
+	/* background-color: transparent; */
+	/* flex-grow: 1; */
+	/* Allows the input to take up available space */
+}
+
+/* Style for the "nálar" unit text */
+.unit-label {
+	grid-row: 1;
+	grid-column: 1;
+	font-size: 16px;
+	/* color: #666; */
+	font-weight: bold;
+	width: fit-content;
+	align-self: flex-end;
+	justify-self: center;
+}
+
+
+/* --- CSS to hide the arrows on the number input --- */
+
+/* For Chrome, Safari, Edge, Opera */
+/* input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+} */
+
+/* For Firefox */
+/* input[type=number] {
+	-moz-appearance: textfield;
+} */
+
+/*# sourceMappingURL=styles.css.map */

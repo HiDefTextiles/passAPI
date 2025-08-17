@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="is">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+	<main class="grid">
+		<a href="/" class="button borderItem" style="grid-row: 1;grid-column: 1;">
+			<h2>Til baka 🏡</h2>
+		</a>
+
+
+
+		<div class="borderItem" style="grid-column: 5;grid-row: 1;">
+			<a href="/info" class="button">
+
+
+
+				<h2>Info/Error</h2>
+				<div
+					style="width: fit-content;display: flex;flex-direction: row;text-align: center;align-self: center;justify-self: center;margin: 0 auto;">
+					<p class="WebSocketStatus">🔁</p>
+					<p class="SeriaclCommunicationStatus">🔁</p>
+				</div>
+				<!-- <p class="WebSocketStatus">🔁</p> -->
+				<!-- <p class="WebSocketStatus">🔁</p> -->
+
+			</a>
+			<!-- <script>
+				const getDrives = async (e) => {
+					// e.preventDefault()
+					const g = await fetch("/api/imageSearch", { method: "GET" })
+
+				}
+			</script> -->
+		</div>
+		<Button class="button" onclick="getDrives()" style="grid-row:2;grid-column: 1 / 6;">💾 Velja mynd af drifi
+			eða
+			USB
+			lykli
+		</Button>
+		<!-- </a> -->
+		<div href="/database" style="grid-row:3;grid-column: 1 / 6;">
+			Velja munstur úr gagnagrunni
+		</div>
+
+		<!-- <div class="nalaBreytir">
+			<h2>Breyta byrjunarnál</h2>
+			<p>Línu númer: <strong id="number">0/0</strong> Búnar</p>
+			<form id="integerForm" action="/api/nr" method="post" class="form">
+				<div class="field">
+					<label for="integerInput">Númer línu</label>
+					<button type="button" onclick="changeValue(-1)">−</button>
+
+					<input type="number" min="0" step="1" max="1" id="integerInput" name="integerInput" required
+						placeholder="" inputmode="numeric" pattern="[0-9]*">
+					<button type="submit" class="buttonChange button">Breyta</button>
+				</div>
+			</form>
+		</div> -->
+		<div id="patternDeleteForm" action="/api/pattern" method="delete" class="form"
+			style="grid-row: 4;grid-column: 1/6;">
+			<div class="field">
+				<p>Fjöldi munstra: <span id="server-value">Ekkert gildi</span></p>
+				<button type="button" class="buttonStopp button" onclick="deleteCurrentPattern()">
+					<h2 style="color: #000;padding:0;">Eyða 1 Munstri 🗑️</h2>
+				</button>
+			</div>
+		</div>
+	</main>
+	<script src="scripts.js"></script>
+
+</body>
+
+</html>
