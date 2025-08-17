@@ -917,27 +917,6 @@ async function deleteCurrentPattern() {
 
 let socket;
 
-function setupKeyboardListeners() {
-	const inputs = document.querySelectorAll(
-		'input[type="text"], input[type="password"], input[type="email"], input[type="search"], input[type="url"], textarea'
-	);
-
-	const showKeyboard = () => {
-		fetch('/api/keyboard/show', { method: 'POST' });
-	};
-
-	const hideKeyboard = () => {
-		fetch('/api/keyboard/hide', { method: 'POST' });
-	};
-
-	inputs.forEach(input => {
-		input.addEventListener('focus', showKeyboard);
-		input.addEventListener('blur', hideKeyboard);
-	});
-}
-
-// Run the setup when the page loads
-window.addEventListener('load', setupKeyboardListeners);
 
 
 const connect = () => {
@@ -1064,6 +1043,28 @@ const connect = () => {
 		console.log("WebSocket error:", error);
 	};
 };
+
+function setupKeyboardListeners() {
+	const inputs = document.querySelectorAll(
+		'input[type="text"], input[type="number"], input[type="email"], input[type="text"], input[type="url"], textarea'
+	);
+
+	const showKeyboard = () => {
+		fetch('/api/keyboard/show', { method: 'POST' });
+	};
+
+	const hideKeyboard = () => {
+		fetch('/api/keyboard/hide', { method: 'POST' });
+	};
+
+	inputs.forEach(input => {
+		input.addEventListener('focus', showKeyboard);
+		input.addEventListener('blur', hideKeyboard);
+	});
+}
+
+// Run the setup when the page loads
+// window.addEventListener('load', setupKeyboardListeners);
 document.addEventListener('DOMContentLoaded', () => {
 	const bs = document.getElementById('loading')
 	// const WebSocketStatus = document.body.querySelector('.WebSocketStatus')
@@ -1073,6 +1074,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	if (re) {
 		re.onclick = connect
 	}
+	setupKeyboardListeners()
 })
 
 // Replace the old popup functions with this one in scripts.js

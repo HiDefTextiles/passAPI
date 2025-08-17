@@ -7,32 +7,19 @@ WIFI_PASS="$2"
 
 echo "--- Reconfiguring Wi-Fi to connect to '$WIFI_SSID' ---"
 
-# 1. Stop and disable the Access Point services
-echo "Stopping AP services..."
-systemctl stop hostapd
-systemctl stop dnsmasq
-systemctl disable hostapd
+# 1. Take down the NetworkManager Access Point profile
+echo "Stopping and deleting the Kiosk AP profile..."
+# Use '|| true' to ignore errors if the connection is already down or doesn't exist.
+# This makes the script safe to run even if the AP was never started.
+nmcli con down "Kiosk-AP-Profile" || true
+nmcli con delete "Kiosk-AP-Profile" || true
 
-# 2. Create the wpa_supplicant.conf file with the new credentials
-echo "Creating new wpa_supplicant.conf file..."
-cat <<EOF > /etc/wpa_supplicant/wpa_supplicant.conf
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=IS # Change to your country code e.g. US, GB
+# 2. Connect to the new Wi-Fi network using NetworkManager
+echo "Connecting to the new Wi-Fi network..."
+# This single command finds the network, creates a new saved connection profile,
+# and connects to it immediately.
+nmcli dev wifi connect "$WIFI_SSID" password "$WIFI_PASS"
 
-network={
-    ssid="${WIFI_SSID}"
-    psk="${WIFI_PASS}"
-    key_mgmt=WPA-PSK
-}
-EOF
-
-# 3. Re-enable the standard networking client
-echo "Re-enabling standard networking..."
-systemctl unmask wpa_supplicant
-systemctl enable wpa_supplicant
-systemctl restart dhcpcd
-
-echo "Configuration complete. Rebooting in 5 seconds..."
+echo "Configuration complete. Rebooting in 5 seconds for changes to take full effect..."
 sleep 5
 reboot
