@@ -4,10 +4,8 @@
 #define PIN_NEEDLE_RTL 5
 #define PIN_NEEDLE_LTR 6
 // - buttonPins
-#define switchPin 10
-#define colPin 11
+#define switchPin 11
 #define goStopPin 12
-#define endPin 13
 
 // - Variable declarations
 volatile uint8_t csenseNow = 0;
@@ -28,6 +26,8 @@ void setup()
 
 	pinMode(goStopPin, OUTPUT);
 	digitalWrite(goStopPin, HIGH);
+	pinMode(switchPin, OUTPUT);
+	digitalWrite(switchPin, HIGH);
 	attachInterrupt(digitalPinToInterrupt(PIN_CSENSE), interrupt_CSENSE, CHANGE);
 
 	pinMode(PIN_NEEDLE_LTR, OUTPUT);
@@ -51,7 +51,7 @@ void interrupt_CSENSE()
 		csenseNow = csenseNew;
 		state = ((crefNow + 3) * 10) + csenseNow;
 		int start = (input < 0) ? input + 90 : input + 89;
-		int index = counter - 26 - start;
+		int index = counter - 26;
 
 		switch (state)
 		{

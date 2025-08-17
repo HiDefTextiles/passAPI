@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { createSchema, dropSchema, insertVel } from "./db.js";
+import { createSchema, dropSchema, insertVel } from "../db/db.js";
 // WILL SETUP OR RESET DATABASE
 
 dotenv.config();

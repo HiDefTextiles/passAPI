@@ -2,6 +2,29 @@
 
 Það þurfa að líða 2s frá því að node js tengist arduino í gegnum serial.
 
+
+# Setup tutorial
+* Project setup with Node v23.5.0
+* in root (passapi)
+	RUN:
+	```
+	npm install
+	```
+# Run tutorial
+* Create database url in environment
+	* Locally.
+		* Create .env
+		* write
+		```
+		DATABASE_URL = connectionstring
+		```
+		to use this feature during runtime, connectionstring must be replaced with a url which points to a sql database, set up with schema like in ./src/db/sql
+* Computer must be connected to arduino via usb port
+* to run
+ ```
+ npm run dev
+ ```
+
 # Leiðbeiningar sem eg sendi snæju copy og paste
 
 Formattið er eftirfarandi.
@@ -52,4 +75,11 @@ Hugmyndinn með að hafa þetta svona er svo að þú getir verið með sem dæm
 Þetta er einhver gerð af prjóna tækni, og gefur þetta okkur kleyft að gera allskyns munstur.
 11:23
 Við styðjum því allskyns áferðir og 4a liti í raun, endilega spurðu og ég svara við næsta tækifæri
+
+# Glósur sumar 2025
+
+counter | staða
+216		| litaskipri byrja
+241		| skiptir um lit
+216 	| litaskipti búin
 

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="is">
+<!-- Þetta er harðkóðað html sýnidæmi til að sýna mögulega útfærslu -->
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+	<div id="loading"></div>
+	<main class="grid">
+
+		<a href="/" class="button borderItem" style="grid-row: 1;grid-column: 1;">
+			<h2>Til baka 🏡</h2>
+		</a>
+
+		<div style="grid-column: 2/5;grid-row:1">
+			<h1>Info/Error</h1>
+		</div>
+		<div>
+			<p id="ip-info"></p>
+		</div>
+		<!-- <p class="WebSocketStatus">🔁</p> -->
+		<ol style="grid-column: 1/6;grid-row: 2/5;width:100%;display: flex;flex-direction: column;gap:25px;"
+			class="last3grid">
+			<li>
+				<p class="WebSocketStatus">🔁</p>
+				<p>: Staða samskipta við bakenda :</p>
+				<button type="button" onclick="connect()" style="padding:0;">🔌Endurtengjast.</button>
+			</li>
+			<li>
+				<p class="SeriaclCommunicationStatus"></p>
+				<p>: Staða tengingar við arduino :</p>
+				<button type="button" onclick="connectSerial(event)" style="padding:0;">🔌Endurtengjast.</button>
+			</li>
+			<li>
+				<p class="NetworkCommunicationStatus"></p>
+				<p>: Staða net-tengingar við netheiminn</p>
+				<button id="startApButton">Wifi-point</button>
+			</li>
+			<li>
+				<p>hidef.local</p>
+				<p>notandi:notandi</p>
+				<a href="/wifi" class="borderItem button">setup wifi</p>
+			</li>
+			<li>
+				<p id="statusMessage" style="grid-column: 1/4;"></p>
+			</li>
+		</ol>
+	</main>
+
+
+	<script src="scripts.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
+			const ip_element = document.getElementById('ip-info');
+			if (!ip_element) {
+				return
+			}
+			const respon = await fetch("/api/ip", { method: 'GET' });
+			const { res_ip, req_ip, api } = await respon.json()
+			ip_element.innerHTML = `IP: ${res_ip}<br/>PORT: /3000<br/>API: /api`
+			const main = document.getElementsByClassName('grid')[0]
+			main.getElementsByClassName('SerialCommunicationStatus')
+			const ncs = main.getElementsByClassName('NetworkCommunicationStatus')
+			if (ncs && ncs[0]) {
+				check_internet().then(
+					bool => { main.getElementsByClassName('NetworkCommunicationStatus')[0].innerHTML = bool ? '✅' : '⛔' }
+
+				)
+			}
+		}
+		)
+		// document.addEventListener('DOM')
+	</script>
+	<script>
+		const startApButton = document.getElementById('startApButton');
+		const statusMessage = document.getElementById('statusMessage');
+
+		startApButton.addEventListener('click', async () => {
+			statusMessage.textContent = 'Attempting to start Access Point...';
+			try {
+				// This sends the request to your Node.js server
+				const response = await fetch('http://localhost:3000/api/start-access-point', {
+					method: 'POST'
+				});
+
+
+				const result = await response.json();
+				// statusMessage.textContent = result.message;
+				alert(...Object.values(result))
+				// window.location.replace("/")
+				// history.pushState('/')
+				if (!response.ok) {
+
+					throw new Error('Server responded with an error.');
+				}
+
+			} catch (error) {
+				console.error('Error:', error);
+				statusMessage.textContent = 'Failed to start Access Point. Check console.';
+			}
+
+		});
+	</script>
+</body>
+
+</html>
