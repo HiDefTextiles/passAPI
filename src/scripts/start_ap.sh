@@ -1,25 +1,27 @@
 #!/bin/bash
-
-# Exit immediately if a command exits with a non-zero status.
 set -e
 
-echo "--- Starting Access Point Setup ---"
+echo "--- Starting Access Point Setup using NetworkManager ---"
 
-# 1. CONFIGURE ACCESS POINT USING NETWORKMANAGER
-# ------------------------------------------------
-echo "Configuring wlan0 as an Access Point with NetworkManager..."
+# Delete any old profile with the same name to ensure a clean start
+nmcli con delete "Kiosk-AP-Profile" || true
 
-# This single command tells NetworkManager to:
-#  - Create a Wi-Fi connection profile named "Kiosk-AP-Profile"
-#  - Set the Wi-Fi name (SSID) to "Kiosk-WiFi"
-#  - Put it in Access Point mode
-#  - Set the static IP to 192.168.4.1
-#  - Automatically handle DHCP for connecting clients (replaces dnsmasq)
-nmcli dev wifi hotspot ifname wlan0 con-name "Kiosk-AP-Profile" ssid "Kiosk-WiFi" band bg ip4 192.168.4.1/24 password "raspberry"
+# Step 1: Create a new, plain Wi-Fi connection profile
+echo "Creating a new connection profile..."
+nmcli con add type wifi ifname wlan0 con-name "Kiosk-AP-Profile" autoconnect no ssid "Kiosk-WiFi"
 
-echo "Bringing up the new Access Point connection..."
-# The command above might automatically activate, but this ensures it.
+# Step 2: Modify the profile to be a WPA2 Access Point with our specific IP
+echo "Configuring the profile as a Hotspot..."
+nmcli con modify "Kiosk-AP-Profile" 802-11-wireless.mode ap 802-11-wireless.band bg
+nmcli con modify "Kiosk-AP-Profile" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "raspberry"
+nmcli con modify "Kiosk-AP-Profile" ipv4.method shared ipv4.addresses 192.168.4.1/24
+
+# Step 3: Set the profile to autoconnect on boot
+echo "Setting AP Profile to autoconnect..."
+nmcli con modify "Kiosk-AP-Profile" connection.autoconnect yes
+
+# Step 4: Activate the new Access Point connection
+echo "Activating the new Access Point..."
 nmcli con up "Kiosk-AP-Profile"
-
 
 echo "--- Access Point Setup Complete! ---"
