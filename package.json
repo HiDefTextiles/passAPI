@@ -8,7 +8,7 @@
 		"devtest": "node ./index.js",
 		"dev": "node --loader ts-node/esm ./src/app.ts",
 		"start": "node dist/app.js",
-		"build": "tsc && cpy \"src/**/*.html\" dist && cpy \"src/**/*.css\" dist && cpy \"src/**/*.js\" dist && cpy \"src/**/*.css.map\" dist",
+		"build": "tsc && cpy \"src/**/*.html\" dist && cpy \"src/**/*.css\" dist && cpy \"src/**/*.js\" dist && cpy \"src/**/*.css.map\" dist && cpy \"src/**/*.sh\" dist",
 		"sass": "sass styles.scss ./src/public/styles.css -w"
 	},
 	"author": "",

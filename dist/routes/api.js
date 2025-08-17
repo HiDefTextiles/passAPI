@@ -123,9 +123,10 @@ APIrouter.post('/api/stream', dbPattern);
 APIrouter.post('/test', communicationTest);
 APIrouter.post('/start-access-point', (req, res) => {
     // console.log
-    const scriptPath = path.join(__dirname, 'scripts', 'start_ap.sh');
+    const scriptPath = path.join(__dirname, '../scripts', 'start_ap.sh');
     // Execute the script
     execFile('sudo', [scriptPath], (error, stdout, stderr) => {
+        // console.log(scriptPath)
         if (error) {
             console.error(`execFile error: ${error}`);
             console.error(`stderr: ${stderr}`);
@@ -143,7 +144,7 @@ APIrouter.post('/set-wifi', (req, res) => {
         return res.status(400).json({ message: 'SSID and password are required.' });
     }
     console.log(`Received request to connect to Wi-Fi: ${ssid}`);
-    const scriptPath = path.join(__dirname, 'scripts', 'set_wifi.sh');
+    const scriptPath = path.join(__dirname, '../scripts', 'set_wifi.sh');
     // Execute the script with SSID and password as arguments
     execFile('sudo', [scriptPath, ssid, password], (error, stdout, stderr) => {
         if (error) {

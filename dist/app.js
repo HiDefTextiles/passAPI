@@ -3,7 +3,7 @@ import { cors } from './lib/cors.js';
 import { APIrouter } from './routes/api.js';
 import { previewRouter } from './routes/preview.js';
 import http from 'http';
-import { WebSocketServer } from "ws";
+import { WebSocketServer, WebSocket } from "ws";
 import { nr, postrequests } from './lib/control.js';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
