@@ -8,7 +8,7 @@ import { getDrives } from '../lib/control.js';
 import { my_ip } from '../status/connection.js'
 import { portSerial, writeDataToArduino } from '../lib/serial.js';
 import { Script } from 'vm';
-import { execFile } from 'child_process';
+import { exec, execFile } from 'child_process';
 export const APIrouter = express.Router();
 
 
@@ -163,5 +163,31 @@ APIrouter.post('/set-wifi', (req, res) => {
 		}
 		console.log(`stdout: ${stdout}`);
 		res.status(200).json({ message: 'Wi-Fi configured successfully!' });
+	});
+});
+
+APIrouter.post('/keyboard/show', (req, res) => {
+	// First, kill any existing keyboard to prevent multiple instances
+	exec('pkill matchbox-keyboa || true', () => {
+		// Then, launch a new keyboard instance
+		exec('matchbox-keyboard', (error) => {
+			if (error) {
+				console.error('Failed to show keyboard:', error);
+				return res.status(500).json({ message: 'Failed to show keyboard' });
+			}
+			res.status(200).json({ message: 'Keyboard shown' });
+		});
+	});
+});
+
+// Endpoint to hide the on-screen keyboard
+APIrouter.post('/keyboard/hide', (req, res) => {
+	// Kill the keyboard process
+	exec('pkill matchbox-keyboard', (error) => {
+		if (error && error.code !== 1) { // Ignore error code 1 (no process found)
+			console.error('Failed to hide keyboard:', error);
+			return res.status(500).json({ message: 'Failed to hide keyboard' });
+		}
+		res.status(200).json({ message: 'Keyboard hidden' });
 	});
 });
