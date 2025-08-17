@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { catchErrors } from '../lib/catch-errors.js';
-import { communicationTest, connectArduino, dbPattern, deletePattern, getImage, postFiles, postMake, postPattern, postnr } from '../lib/control.js'
+import { communicationTest, connectArduino, dbPattern, deletePattern, getImage, postFiles, postMake, postPattern, postnr, postrequests } from '../lib/control.js'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -191,3 +191,7 @@ APIrouter.post('/keyboard/hide', (req, res) => {
 		res.status(200).json({ message: 'Keyboard hidden' });
 	});
 });
+
+APIrouter.get('/currentPattern', (req, res) => {
+	res.json({ current: postrequests[0] })
+})

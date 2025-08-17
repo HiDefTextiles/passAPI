@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="is">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<div id="imagePreview"></div>
+</body>
+<script>
+
+	function renderPatternPreview(patternMatrix) {
+		const previewContainer = document.getElementById('imagePreview');
+		if (!previewContainer) return;
+
+		// --- START: Dynamic Color Palette Creation ---
+		// Build the color palette from the current values of the color pickers.
+		const colorPickers = document.querySelectorAll('.color-picker');
+		const matrix = typeof patternMatrix === 'string' ? JSON.parse(patternMatrix) : patternMatrix;
+
+		// Index 0 can be a default background color.
+		const colorPalette = { 0: 'transparent' };
+
+		if (colorPickers.length > 0) {
+			// --- IF YES: Use the colors from the pickers ---
+			// console.log("Color pickers found, using their values.");
+			colorPickers.forEach(picker => {
+				const index = picker.dataset.colorIndex;
+				colorPalette[index] = picker.value;
+			});
+		} else {
+			// --- IF NO: Use a default set of colors ---
+			console.log("No color pickers found, using default palette.");
+			colorPalette[1] = '#000000'; // Default for color 1: Black
+			colorPalette[2] = '#6D86E3'; // Default for color 2: Blue
+			colorPalette[3] = '#E3C46D'; // Default for color 3: Yellow
+			colorPalette[4] = '#FFFFFF'; // Default for color 4: White
+		}
+		// --- END: Dynamic Color Palette Creation ---
+
+		const newPreview = el('div', {
+			id: 'imagePreview',
+			style: `
+            display: grid;
+            grid-template-columns: repeat(${matrix[0].length}, 2px);
+            width: ${matrix.length * 2}px;
+            gap: 0;
+            max-height: 100%;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            align-content: center;
+			align-self:center;
+			justify-content:center;
+			justify-self:center;
+        `
+		},
+			...matrix.flat().map(colorIndex =>
+				el('div', {
+					class: 'pattern-cell',
+					'data-color-index': colorIndex,
+					// The rest of the function now uses the dynamically built palette.
+					style: `width: 2px; height: 2px; background-color: ${colorPalette[colorIndex]};`
+				})
+			)
+		);
+		// const matrixJSON = JSON.stringify(patternMatrix);
+		// localStorage.setItem('userPatternMatrix', matrixJSON);
+		previewContainer.replaceWith(newPreview);
+	}
+	document.addEventListener('DOMContentLoaded', async () => {
+		const response = await fetch('/api/currentPattern', { method: 'GET' })
+		if (!response) {
+			alert('fékk ekki svar')
+			return
+		}
+		const data = JSON.parse(response)
+		const { start, pattern } = data.current
+		renderPatternPreview(pattern)
+
+	})
+</script>
+
+</html>

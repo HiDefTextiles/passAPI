@@ -205,9 +205,11 @@ void serialStream()
 			case 253:
 				buttonPress(okPin);
 			case 252:
+				resetPosition();
+			case 251:
 				// counter = 0;
 				direction = 'L';
-			case 251:
+			case 250:
 				if (direction == 'R')
 				{
 					buttonPress(switchPin);

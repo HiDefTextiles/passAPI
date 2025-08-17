@@ -31,3 +31,8 @@ previewRouter.get('/wifi', (req, res) => {
 	res.sendFile(join(__dirname, '../public/wifi.html'));
 
 })
+
+previewRouter.get('/picture', (req, res) => {
+	res.sendFile(join(__dirname, '../public/picture.html'));
+
+})
