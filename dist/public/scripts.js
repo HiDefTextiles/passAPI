@@ -917,240 +917,28 @@ async function deleteCurrentPattern() {
 
 let socket;
 
-// const connect = () => {
+function setupKeyboardListeners() {
+	const inputs = document.querySelectorAll(
+		'input[type="text"], input[type="password"], input[type="email"], input[type="search"], input[type="url"], textarea'
+	);
+
+	const showKeyboard = () => {
+		fetch('/api/keyboard/show', { method: 'POST' });
+	};
+
+	const hideKeyboard = () => {
+		fetch('/api/keyboard/hide', { method: 'POST' });
+	};
+
+	inputs.forEach(input => {
+		input.addEventListener('focus', showKeyboard);
+		input.addEventListener('blur', hideKeyboard);
+	});
+}
+
+// Run the setup when the page loads
+window.addEventListener('load', setupKeyboardListeners);
 
-// 	const WebSocketStatus = document.body.querySelector('.WebSocketStatus')
-
-// 	socket = new WebSocket('ws://localhost:3001');
-
-// 	let errorBoolean = false;
-
-// 	socket.onmessage = function (event) {
-
-// 		const obj = JSON.parse(event.data);
-
-// 		console.log(obj)
-
-// 		if (obj && Object.keys(obj).filter(s => s == 'portSerial').length) {
-
-// 			const arduinoElement = document.getElementsByClassName("SeriaclCommunicationStatus")
-
-// 			if (arduinoElement && arduinoElement[0]) {
-
-// 				arduinoElement[0].innerHTML = obj.portSerial ? '✅' : '⛔';
-
-// 			}
-
-// 			const initiate = document.getElementById('initiate-knitting');
-
-// 			if (initiate && !obj.portSerial) {
-
-// 				initiate.classList.add('invalidButton');
-
-// 				initiate.onclick = (ev) => alert("Enging tenging við arduino")
-
-// 				initiate.type = 'button';
-
-// 			}
-
-// 		}
-
-// 		// obj && obj.nr && highlightRow(obj.nr);
-
-// 		// Update the total lines variable
-
-// 		if (obj.postrequestLength) {
-
-// 			totalPatternLines = obj.postrequestLength;
-
-// 		}
-
-
-
-// 		const nails = document.body.querySelector('#bed');
-
-// 		const sequence = document.body.querySelector('#munstur');
-
-
-
-
-
-
-
-// 		if (obj && obj.postrequest && obj.postrequest.pattern) {
-
-// 			const patternChunk = obj.postrequest.pattern;
-
-// 			const activeIndex = obj.activeIndexInChunk;
-
-// 			const trueCurrentLine = obj.nr;
-
-
-
-// 			nails && empty(nails);
-
-// 			sequence && empty(sequence);
-
-
-
-// 			patternChunk.forEach((stak, indexInChunk) => {
-
-// 				const pattmeontheback = Array.isArray(stak) ? stak : String(stak).replaceAll(',', '').split('');
-
-
-
-// 				// Assigns the correct CSS classes based on your stylesheet and clarification
-
-// 				const gridRowClass = `gridrow${indexInChunk + 1}`;
-
-// 				const classList = [gridRowClass];
-
-
-
-// 				// The active line is placed in gridrow4 and gets the 'mark' class
-
-// 				if (indexInChunk === activeIndex && gridRowClass === 'gridrow4') {
-
-// 					classList.push('mark');
-
-
-
-// 				}
-
-
-
-// 				// Safe calculation for the line number
-
-// 				const trueNum = Number(trueCurrentLine) || 0;
-
-// 				const activeNum = Number(activeIndex) || 0;
-
-// 				const actualLineNumber = (trueNum - activeNum) + indexInChunk;
-
-// 				console.log(actualLineNumber, trueNum, activeNum, indexInChunk)
-
-// 				sequence && sequence.appendChild(
-
-// 					el('tr', {
-
-// 						class: classList.join(' '),
-
-// 						id: String(actualLineNumber) + 'l'
-
-// 					},
-
-// 						el('th', {}, actualLineNumber + 1),
-
-// 						...pattmeontheback.map(values => el('td', values > 0 ? { class: 'activeNeedle' } : { class: 'inactiveNeedle' }, ''))
-
-// 					)
-
-// 				);
-
-// 			});
-
-
-
-// 			// Rebuild the header
-
-// 			if (patternChunk.length > 0) {
-
-// 				const start = Number(obj.postrequest.start);
-
-// 				const end = patternChunk[0].length;
-
-// 				nails && nails.appendChild(
-
-// 					el('tr', {},
-
-// 						el('th', {}, 'nr'),
-
-// 						...(arrayRange(start, start + (end - 1), 1).map(nl => {
-
-// 							const positonlCheck = (nl === start) || (nl === start + (end - 1));
-
-// 							return el('th', positonlCheck ? { class: "thead" } : {}, (positonlCheck ? nl : ''));
-
-// 						}))
-
-// 					)
-
-// 				);
-
-// 			}
-
-// 		}
-
-
-
-// 		// Always call a function to update the counter displays
-
-// 		updateUICounters(obj.nr);
-
-// 	};
-
-
-
-// 	socket.onopen = function (event) {
-
-// 		if (WebSocketStatus) currentWebsocketStatusIcon = WebSocketStatus.innerHTML = '✅';
-
-// 		errorBoolean = false;
-
-// 		console.info("WebSocket is open now.");
-
-// 	};
-
-
-
-// 	socket.onclose = function (event) {
-
-// 		if (WebSocketStatus) currentWebsocketStatusIcon = WebSocketStatus.innerHTML = '⛔';
-
-// 		console.info("WebSocket is closed now.");
-
-
-
-// 		try {
-
-// 			for (let i = 1; !errorBoolean && i < 3 && WebSocketStatus && WebSocketStatus.innerHTML == '⛔'; i++) {
-
-// 				setTimeout(connect, 30000 * i);
-
-// 			}
-
-// 			// await setTimeout(connect, 60000);
-
-// 		} catch (e) {
-
-// 			console.info('Gat ekki endurhlaðið tengingi')
-
-// 		}
-
-// 	};
-
-// 	// socket.send()
-
-// 	socket.onerror = function (error) {
-
-// 		errorBoolean = true
-
-// 		if (WebSocketStatus) currentWebsocketStatusIcon = WebSocketStatus.innerHTML = '⚠ villa';
-
-// 		console.log("WebSocket error:", error);
-
-// 		try {
-
-// 		} catch (e) {
-
-// 			console.log('Gat ekki endurhlaðið tengingi')
-
-// 		}
-
-// 	};
-
-// }
-// scripts.js
 
 const connect = () => {
 	const WebSocketStatus = document.body.querySelector('.WebSocketStatus')

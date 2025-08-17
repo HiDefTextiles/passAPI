@@ -9,7 +9,8 @@ echo "--- Starting Access Point Setup ---"
 # ---------------------------------
 echo "Configuring static IP for wlan0..."
 # Stop the default networking service to take manual control
-systemctl stop dhcpcd
+# systemctl stop dhcpcd
+systemctl stop NetworkManager
 # Add our static IP configuration
 cat <<EOF > /etc/network/interfaces.d/wlan0-static
 allow-hotplug wlan0
@@ -19,6 +20,7 @@ iface wlan0 inet static
     network 192.168.4.0
     broadcast 192.168.4.255
 EOF
+
 # Bring the interface up with the new IP
 ifdown wlan0 || true # Ignore errors if it's already down
 ifup wlan0

@@ -15,12 +15,6 @@ html {
 	/* overflow: hidden; */
 }
 
-body {
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-
 .popup-cover {
 	z-index: 99;
 	grid-column: 1/6;
