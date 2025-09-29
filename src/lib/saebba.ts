@@ -99,10 +99,7 @@ export async function imageToMatrix(source: string, stitches: number, numColors:
 			return numColors - index;
 		})
 	);
-	// --- END: Refactored Color Code Mapping ---
-
-	// Finalize the matrix: reverse each row for the knitting pattern
-	return finalMatrix.map(row => row.slice().reverse());
+	return finalMatrix.map(row => row.slice());
 }
 
 export function findNearestColor(value: number, colors: number[]): number {
