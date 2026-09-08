@@ -387,7 +387,9 @@ export const postFiles = [
 					dir,
 					file,
 					image,
-					newPath: `${path}${stak.name}\\\\`
+					// newPath: `${path}${stak.name}\\\\`
+					// Checks if the path already has a slash. If not, it adds one before the filename.
+					newPath: `${path.endsWith('/') || path.endsWith('\\') ? path : path + '/'}${stak.name}`
 				}
 				return {}
 			}
