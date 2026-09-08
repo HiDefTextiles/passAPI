@@ -431,23 +431,28 @@ function getMimeType(filePath) {
 // ]
 export const getImage = [
 	async (req, res) => {
+		let originalPath = req.body.path; // Save original for the error log
+		let linuxSafePath = "";
+
 		try {
-			// 1. Use 'let' so the string can be modified
 			let { path } = req.body;
 
 			if (!path) {
-				return res.status(400).json({ error: "Path is missing" });
+				return res.status(400).json({
+					error: "Path is missing",
+					receivedBody: req.body
+				});
 			}
 
-			// 2. Safely check for trailing slashes (both Windows and Linux styles)
+			// Safely check for trailing slashes (both Windows and Linux styles)
 			while (path && (path.endsWith('\\') || path.endsWith('/'))) {
 				path = path.slice(0, -1);
 			}
 
-			// 3. Normalize Windows backslashes to Linux forward slashes for the Pi
-			const linuxSafePath = path.replaceAll('\\\\', '/').replaceAll('\\', '/');
+			// Normalize Windows backslashes to Linux forward slashes for the Pi
+			linuxSafePath = path.replaceAll('\\\\', '/').replaceAll('\\', '/');
 
-			// 4. Read the file using the clean path
+			// Read the file using the clean path
 			const imageFile = await readFile(linuxSafePath);
 			const base64Data = imageFile.toString('base64');
 			const mimeType = getMimeType(linuxSafePath);
@@ -456,9 +461,18 @@ export const getImage = [
 			res.json({ imageData: dataUrl });
 
 		} catch (error) {
-			// 5. Catch errors so the server doesn't crash silently
-			console.error("Failed to load image:", error.message);
-			res.status(500).json({ error: "Failed to load image" });
+			console.error("Failed to load image:", error);
+
+			// Send a highly detailed forensic log back to the frontend
+			res.status(500).json({
+				error: "Failed to load image",
+				errorMessage: error.message,
+				errorCode: error.code,       // e.g., 'ENOENT' or 'EACCES'
+				errorStack: error.stack,
+				originalPathSent: originalPath,
+				attemptedPathToRead: linuxSafePath,
+				serverPlatform: process.platform // will return 'linux' on Raspberry Pi
+			});
 		}
 	}
 ]
