@@ -167,7 +167,10 @@ const handler = (start, pattern, msg) => {
 	let parsedStart = Number.parseInt(start)
 	parsedStart = (parsedStart <= 0) ? 90 + parsedStart : 89 + parsedStart
 	const leftFill = new Array(parsedStart).fill(1)
-	if (senddByteToArduino([stilling.length, litur].concat(bitsToBytes((leftFill.concat(stilling)))))) {
+	if (senddByteToArduino([
+		// 11
+		stilling.length
+		, litur].concat(bitsToBytes((leftFill.concat(stilling)))))) {
 		nr += 1;
 
 	}
@@ -413,19 +416,53 @@ function getMimeType(filePath) {
 	}
 }
 
+// export const getImage = [
+// 	async (req, res) => {
+// 		let { path } = req.body;
+// 		while (path && '\\'.includes(path[-1])) {
+// 			path = path.slice(0, -1)
+// 		}
+// 		const imageFile = await readFile(path.includes('\\\\') ? path : path.replaceAll('\\', '\\\\'))
+// 		const base64Data = imageFile.toString('base64');
+// 		const mimeType = getMimeType(path)
+// 		const dataUrl = `data:${mimeType};base64,${base64Data}`;
+// 		res.json({ imageData: dataUrl })
+// 	}
+// ]
 export const getImage = [
 	async (req, res) => {
-		const { path } = req.body;
-		while (path && '\\'.includes(path[-1])) {
-			path = path.slice(0, -1)
+		try {
+			// 1. Use 'let' so the string can be modified
+			let { path } = req.body;
+
+			if (!path) {
+				return res.status(400).json({ error: "Path is missing" });
+			}
+
+			// 2. Safely check for trailing slashes (both Windows and Linux styles)
+			while (path && (path.endsWith('\\') || path.endsWith('/'))) {
+				path = path.slice(0, -1);
+			}
+
+			// 3. Normalize Windows backslashes to Linux forward slashes for the Pi
+			const linuxSafePath = path.replaceAll('\\\\', '/').replaceAll('\\', '/');
+
+			// 4. Read the file using the clean path
+			const imageFile = await readFile(linuxSafePath);
+			const base64Data = imageFile.toString('base64');
+			const mimeType = getMimeType(linuxSafePath);
+			const dataUrl = `data:${mimeType};base64,${base64Data}`;
+
+			res.json({ imageData: dataUrl });
+
+		} catch (error) {
+			// 5. Catch errors so the server doesn't crash silently
+			console.error("Failed to load image:", error.message);
+			res.status(500).json({ error: "Failed to load image" });
 		}
-		const imageFile = await readFile(path.includes('\\\\') ? path : path.replaceAll('\\', '\\\\'))
-		const base64Data = imageFile.toString('base64');
-		const mimeType = getMimeType(path)
-		const dataUrl = `data:${mimeType};base64,${base64Data}`;
-		res.json({ imageData: dataUrl })
 	}
 ]
+
 
 export const postMake = [
 	async (req, res) => {
@@ -439,32 +476,64 @@ export const postMake = [
 	}
 ]
 
-parser && parser.on('data', data => {
-	console.info(data, nr, 0)
+// parser && parser.on('data', data => {
+// 	console.log('Data from Arduino:', data);
+// 	console.info(data, nr, 0)
+// 	if (postrequests.length) {
+// 		const { start, pattern, msg } = postrequests[0];
+// 		const linur = pattern.length;
+// 		((data === "R" && nr % 2 !== 0) || (nr > 1 && data === "L" && nr % 2 === 0))
+// 			&& nr < linur && handler(start, pattern, msg);
+// 		if (nr >= linur) {
+// 			postrequests.shift();
+// 			nr = 0;
+// 			if (postrequests[0]) {
+// 				nr = 0;
+// 				const newpattern = postrequests[0];
+// 				handler(newpattern.start, newpattern.pattern, newpattern.msg);
+// 			} else {
+// 				sendit()
+// 			}
+// 		}
+// 	} else if (stream.status && data == 'L') {
+// 		get(stream.start)
+// 	}
+// 	else {
+// 		sendit();
+// 	};
+// }
+// )
+
+// Add this to your main backend file (e.g., control.js)
+export const handleSerialData = (rawData) => {
+	const data = rawData.trim(); // Trim hidden whitespace/newlines
+	// console.log('Data from Arduino:', data);
+	console.info(data, nr, 0);
+
 	if (postrequests.length) {
 		const { start, pattern, msg } = postrequests[0];
 		const linur = pattern.length;
-		((data === "R" && nr % 2 !== 0) || (nr > 1 && data === "L" && nr % 2 === 0))
-			&& nr < linur && handler(start, pattern, msg);
+
+		if (((data === "R" && nr % 2 !== 0) || (nr > 1 && data === "L" && nr % 2 === 0)) && nr < linur) {
+			handler(start, pattern, msg);
+		}
+
 		if (nr >= linur) {
 			postrequests.shift();
 			nr = 0;
 			if (postrequests[0]) {
-				nr = 0;
 				const newpattern = postrequests[0];
 				handler(newpattern.start, newpattern.pattern, newpattern.msg);
 			} else {
-				sendit()
+				sendit();
 			}
 		}
-	} else if (stream.status && data == 'L') {
-		get(stream.start)
-	}
-	else {
+	} else if (stream.status && data === 'L') {
+		get(stream.start);
+	} else {
 		sendit();
-	};
-}
-)
+	}
+};
 
 export const communicationTest = [
 	async (req, res) => {

@@ -1,6 +1,7 @@
 import { SerialPort } from "serialport";
 import { ReadlineParser } from "serialport";
 import { broadcast, wss } from "../app.js";
+import { handleSerialData } from "./control.js";
 
 // const port = new SerialPort('/dev/ttyACM')
 /**
@@ -96,7 +97,7 @@ function connect(path) {
 	});
 
 	parser = portSerial.pipe(new ReadlineParser({ delimiter: '\r\n' }));
-
+	parser.on('data', handleSerialData);
 	portSerial.on('open', () => {
 		console.log('Serial port open');
 		broadcast({ portSerial: !!portSerial });
@@ -165,6 +166,7 @@ export async function resetConnection() {
  */
 export function senddByteToArduino(message) {
 	// console.log(message)
+	console.log(message)
 	message.unshift(message.length)
 	// console.log(message)
 	const buffer = Buffer.from(message)

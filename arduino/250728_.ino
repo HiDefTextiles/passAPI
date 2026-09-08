@@ -157,7 +157,8 @@ void serialStream()
 		{
 			messageLength = currentMessage;
 		}
-		else if (messageLength > 0)
+		// else
+		if (messageLength > 0)
 		{
 			if (messageCounter == 0)
 			{
