@@ -3,3 +3,6 @@
 *.env
 dist/
 /dist
+
+# IDE
+.idea/
